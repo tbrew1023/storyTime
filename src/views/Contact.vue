@@ -13,12 +13,12 @@
                     </p>
                 </div>
                 <div class="contact-buttons">
-                    <a href="https://www.instagram.com/e.z.li/"><div class="sb"><div class="sb-icon ig"></div><span>e.z.li</span></div></a>
-                    <a href="https://www.behance.net/ericzzli/moodboards"><div class="sb"><div class="sb-icon bh"></div><span>ericzzli</span></div></a>
-                    <a href="https://www.linkedin.com/in/ericzzli/"><div class="sb"><div class="sb-icon li"></div><span>ericzzli</span></div></a>
+                    <a href="https://www.instagram.com/e.z.li/"><div class="sb hoverable"><div class="sb-icon ig hoverable"></div><span class="hoverable">e.z.li</span></div></a>
+                    <a href="https://www.behance.net/ericzzli/moodboards"><div class="sb hoverable"><div class="sb-icon bh hoverable"></div><span class="hoverable">ericzzli</span></div></a>
+                    <a href="https://www.linkedin.com/in/ericzzli/"><div class="sb hoverable"><div class="sb-icon li hoverable"></div><span class="hoverable">ericzzli</span></div></a>
                     <div class="contact-other">
-                        <a href="mailto:ezl@protonmail.com"><div class="sb"><div class="sb-icon email"></div><span>eric@ericzzli.com</span></div></a>
-                        <div class="sb sb-cv"><div class="sb-icon cv"></div><span>CV on request</span></div>
+                        <a href="mailto:ezl@protonmail.com"><div class="sb hoverable"><div class="sb-icon email"></div><span>eric@ericzzli.com</span></div></a>
+                        <div class="sb sb-cv"><div class="sb-icon cv hoverable"></div><span>CV on request</span></div>
                     </div>
                 </div>
             </div>
@@ -88,6 +88,7 @@ a {
     align-items: center;
     //padding-left: 36px;
     margin-bottom: 12px;
+    transition: 300ms;
 
     span {
         font-size: 20px;
@@ -124,7 +125,7 @@ a {
 
 .contact-buttons {
     //background: orange;
-    width: 14%;
+    width: max-content;
     height: max-content;
     text-align: left;
     padding: $gap;

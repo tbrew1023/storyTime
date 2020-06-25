@@ -5,8 +5,8 @@
       <section class="section">
         <div class="section-inner">
           <div class="clouds-container">
-            <div :style="( triggerDown ? 'parallax-down' : ( triggerUp ? 'parallax-up' : '' ) )" class="cloud cloud1"></div>
-            <div class="cloud cloud2"></div>
+            <div class="cloud cloud1"></div>
+            <div class="cloud cloud2" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
             <div class="cloud cloud3" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
             <div class="cloud cloud4" :class="( fix ? 'invisible parallax3' : 'visible' )"></div>
           </div>
@@ -15,31 +15,31 @@
               <h2>
                 <div class="clock-inner">
                   <h3>chicago</h3>
-                  <h4>00:00</h4>
+                  <h4>{{ chicago }}</h4>
                 </div>
               </h2>
               <h2>
                 <div class="clock-inner">
                   <h3>tokyo</h3>
-                  <h4>00:00</h4>
+                  <h4>{{ tokyo }}</h4>
                 </div>
               </h2>
               <h2>
                 <div class="clock-inner">
                   <h3>new york</h3>
-                  <h4>00:00</h4>
+                  <h4>{{ newYork }}</h4>
                 </div>
               </h2>
               <h2>
                 <div class="clock-inner">
                   <h3>sydney</h3>
-                  <h4>00:00</h4>
+                  <h4>{{ sydney }}</h4>
                 </div>
               </h2>
               <h2>
                 <div class="clock-inner">
                   <h3>london</h3>
-                  <h4>00:00</h4>
+                  <h4>{{ london }}</h4>
                 </div>
               </h2>
             </div>
@@ -49,11 +49,11 @@
               <h2>PRODUCER</h2>
             </div>
             <div :class="( fix ? 'implode' : '' )" class="cat-container cat-container-centered home-section">
-              <div @click="$refs.fullpage.api.moveSectionDown()" class="cat"></div>
+              <div @click="$refs.fullpage.api.moveSectionDown()" class="cat hoverable"></div>
               <p>Scroll down for work</p>
             </div>
           </div>
-          <div :class="( fix ? 'invisible dragon-after' : 'visible' )" class="dragon-container">
+          <div :class="( fix ? 'invisible dragon-after' : 'visible' )" class="dragon-container hoverable">
             <p class="dragon-text">Or we could just chil....</p>
           </div>
           <div :class="( fix ? 'invisible parallax1' : 'visible' )" class="bottom-cloud-container"></div>
@@ -72,6 +72,7 @@
 
 <script>
 //import firebase from 'firebase'
+import moment from 'moment-timezone'
 
 export default {
   name: 'Home',
@@ -88,7 +89,12 @@ export default {
       },
       triggerUp: false,
       triggerDown: false,
-      fix: false
+      fix: false,
+      chicago: '',
+      tokyo: '',
+      newYork: '',
+      sydney: '',
+      london: ''
     }
   },
   props: {
@@ -96,6 +102,24 @@ export default {
   },
   components: {
 
+  },
+  created() {
+    var chicago = moment.tz('America/Chicago').format();
+    var tokyo = moment.tz('Asia/Tokyo').format();
+    var newYork = moment.tz('America/New_York').format();
+    var sydney = moment.tz('Australia/Sydney').format();
+    var london = moment.tz('Europe/London').format();
+
+    this.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
+    this.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
+    this.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
+    this.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
+    this.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
+  },
+  mounted() {
+    setInterval(() => {
+      this.tock();
+    }, 5000);
   },
   methods: {
     handleLeave(origin, destination, direction) {
@@ -127,6 +151,19 @@ export default {
       //console.log(scrollY);
       //this.bannerOffset = scrollY;
     },
+    tock() {
+      var chicago = moment.tz('America/Chicago').format();
+      var tokyo = moment.tz('Asia/Tokyo').format();
+      var newYork = moment.tz('America/New_York').format();
+      var sydney = moment.tz('Sydney/Sydney').format();
+      var london = moment.tz('Europe/London').format();
+
+      this.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
+      this.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
+      this.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
+      this.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
+      this.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
+    }
   }
 }
 </script>
@@ -406,6 +443,8 @@ h4 {
   background-image: url('../assets/SVG/bottom-clouds.svg');
   background-position: center;
   background-size: contain;
+  background-repeat: repeat-x;
+  animation: move-left 180s linear forwards infinite;
 }
 
 .main-stuff {

@@ -36,3 +36,12 @@ $gap: 36px;
 
     }
 }
+
+@keyframes move-left {
+    from {
+        background-position-x: 0;
+    }
+    to {
+        background-position-x: 3150px;
+    }
+}

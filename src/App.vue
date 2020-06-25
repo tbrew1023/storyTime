@@ -12,13 +12,13 @@
       <div :style="cursorCircle" class="g-cursor__circle"></div>
       <div class="g-cursor__point" ref="point" :style="cursorPoint"></div>
     </div>
-    <div id="nav">
+    <div id="nav" class="hoverable">
       <h1 class="main-title">eric li</h1>
-      <div class="link-list">
+      <div class="link-list hoverable">
         <ul>
-          <li><span>></span><router-link to="/#home" v-on:click.native="handleNav(1)">home</router-link></li>
-          <li><span>></span><router-link to="/#work" v-on:click.native="handleNav(2)">work</router-link></li>
-          <li><span>></span><router-link to="/contact">contact</router-link></li>
+          <li><span>></span><router-link class="hoverable" to="/#home" v-on:click.native="handleNav(1)">home</router-link></li>
+          <li><span>></span><router-link class="hoverable" to="/#work" v-on:click.native="handleNav(2)">work</router-link></li>
+          <li><span>></span><router-link class="hoverable" to="/contact">contact</router-link></li>
         </ul>
       </div>
     </div>
@@ -59,11 +59,11 @@ export default {
     document.addEventListener("mousemove", this.moveCursor);
     document.addEventListener('mouseleave', (e) => {
       this.hideCursor = true;
-      console.log(e);
+      console.log('left: ', e.target);
     });
     document.addEventListener('mouseenter', (e) => {
       this.hideCursor = false;
-      console.log(e);
+      console.log('entered: ', e.target);
     });
   },
   methods: {
@@ -81,14 +81,30 @@ export default {
 
     },
     handleNav(index) {
+      console.clear();
       console.log(index);
+      console.log('ROUTE HOME');
+      this.$refs.fullpage.api.moveTo(1);
     },
     moveCursor(e) {
+      var self = this;
+
+      //console.log(e.target.classList);
+
+      if(e.target.classList.contains('hoverable')) {
+        //console.log('HOVERABLE:)');
+        self.hover = true;
+      }
+      else {
+        //console.log('NOT HOVERABLE!');
+        self.hover = false;
+      }
+
       this.xChild = e.clientX;
       this.yChild = e.clientY;
       setTimeout(() => {
-        this.xParent = e.clientX - 15;
-        this.yParent = e.clientY - 15;
+        this.xParent = e.clientX - 20;
+        this.yParent = e.clientY - 20;
       }, 100);
     }
   }
@@ -156,7 +172,7 @@ p {
 
 #nav {
   position: fixed;
-  z-index: 999;
+  z-index: 9999;
 
   h1 {
     padding-left: 18px;
@@ -201,13 +217,16 @@ p {
   }
 }
 
+// --------- cursor stuff ----------
+
 .g-cursor {
 
     &_hide {
       opacity: 0;
       width: 60px;
       height: 60px;
-      transition: width .6s ease,
+      transition: 
+        width .6s ease,
         height .6s ease,
         opacity .6s ease;
     }
@@ -218,13 +237,17 @@ p {
       top: 0;
       left: 0;
       position: fixed;
-      width: 30px;
-      height: 30px;
-      border: 2px solid #fff;
+      width: 36px;
+      height: 36px;
+      border: 4px solid rgba(white, 0.5);
+      //background: rgba(white,0.3);
       border-radius: 100%;
       z-index: 5555;
       backface-visibility: hidden;
-      transition: opacity .6s ease;
+      transition: 
+        opacity 0.6s ease,
+        width 0.6s ease,
+        height 0.6s ease;
     }
 
     &__point {
@@ -243,13 +266,29 @@ p {
     }
 
     &_hover {
-      .g-cursor__circle {
-        opacity: 0;
-        width: 60px;
-        height: 60px;
-        transition: width .6s ease,
-          height .6s ease,
-          opacity .6s ease;
+      .g-cursor__point {
+          opacity: 0.8;
+          //width: 40px;
+          //height: 40px;
+          //background: rgba(white, 1);
+          //border-color: white;
+          transition: 
+            width .4s ease,
+            height .4s ease,
+            opacity .4s ease,
+            transform 0s;
+        }
+
+        .g-cursor__circle {
+          opacity: 0;
+          width: 5px;
+          height: 5px;
+          //background: rgba(white, 1);
+          //border-color: transparent;
+          transition: 
+            width .4s ease,
+            height .4s ease,
+            opacity .4s ease;
       }
     }
   }

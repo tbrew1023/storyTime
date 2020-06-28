@@ -1,7 +1,8 @@
 <template>
-<transition name="fade" mode="out-in">
   <div class="home">
     <full-page ref="fullpage" :options="options" id="fullpage">
+
+      <!-- CONTACT PAGE -->
       <section class="section">
         <div class="section-inner">
           <div class="clouds-container">
@@ -59,15 +60,63 @@
           <div :class="( fix ? 'invisible parallax1' : 'visible' )" class="bottom-cloud-container"></div>
         </div>  
       </section>
+
       <!-- MAIN WORKS PAGE -->
       <section class="section">
         <div class="section-inner">
-          <h2>hello there:)</h2>
-        </div>  
+          <div class="works-list">
+            <ul>
+              <li class="hoverable" v-for="(i) in works" :key="i.index"><span class="hoverable">{{ i }}</span></li>
+            </ul>
+          </div>
+          <div class="clouds-container">
+            <div class="cloud cloud5"></div>
+            <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
+            <div class="cloud cloud7" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
+            <div class="cloud cloud8"></div>
+            <div class="cloud cloud9" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
+            <div class="cloud cloud10" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
+            <div class="cloud cloud11" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
+            <div class="cloud cloud12"></div>
+          </div>
+        </div>
       </section>
+
+      <!-- CONTACT PAGE -->
+      <section class="section">
+        <div class="contact-container">
+          <div class="clouds-container flip">
+            <div class="cloud cloud5"></div>
+            <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
+            <div class="cloud cloud8"></div>
+            <div class="cloud cloud10" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
+            <div class="cloud cloud11" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
+            <div class="cloud cloud12"></div>
+          </div>
+          <div class="about-me">
+              <h1>About me.</h1>
+              <p>
+                  What is there to say about me? Well, I'm a young guy trying to make his mark in this big world. I enjoy designing anything but I'm best at digital design and branding. I hope to one day take these skills to start my own business. In the mean time I enjoy producing beats and gardening.
+                  <br><br>
+                  I grew up in the Chicagoland area and went to DePaul University. I'm a quick learner, open minded, and like coming up with creative solutions.
+                  <br><br>
+                  Anyways, lets link up and get that bread. 
+              </p>
+          </div>
+          <div class="contact-buttons">
+              <a href="https://www.instagram.com/e.z.li/"><div class="sb hoverable"><div class="sb-icon ig hoverable"></div><span class="hoverable">e.z.li</span></div></a>
+              <a href="https://www.behance.net/ericzzli/moodboards"><div class="sb hoverable"><div class="sb-icon bh hoverable"></div><span class="hoverable">ericzzli</span></div></a>
+              <a href="https://www.linkedin.com/in/ericzzli/"><div class="sb hoverable"><div class="sb-icon li hoverable"></div><span class="hoverable">ericzzli</span></div></a>
+              <div class="contact-other">
+                  <a href="mailto:ezl@protonmail.com"><div class="sb hoverable"><div class="sb-icon email hoverable"></div><span class="hoverable">eric@ericzzli.com</span></div></a>
+                  <div class="sb sb-cv"><div class="sb-icon cv hoverable"></div><span>CV on request</span></div>
+              </div>
+          </div>
+        </div>
+      </section>
+
     </full-page>
   </div>
-</transition>
 </template>
 
 <script>
@@ -78,10 +127,14 @@ export default {
   name: 'Home',
   data() {
     return {
+      works: ['Yang Redesign', 'Old Orchard', 'Coinbase', 'ubloe.com'],
       options: {
         scrollingSpeed: 2000,
         fadingEffect: true,
         setAutoscrolling: false,
+        //easingcss3: 'cubic-bezier(0.87, 0, 0.13, 1)', //expo
+        //easingcss3: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)', //bounce
+        easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)',
         anchors: ['home','work'],
         onLeave: (origin, destination, direction) => {
           this.handleLeave(origin, destination, direction);
@@ -94,7 +147,8 @@ export default {
       tokyo: '',
       newYork: '',
       sydney: '',
-      london: ''
+      london: '',
+      activeSlide: 0
     }
   },
   props: {
@@ -128,6 +182,9 @@ export default {
       console.log('destination: ', destination);
       console.log('direction: ', direction);
   
+      this.activeSlide = destination.index;
+
+      console.log('activeSlide: ', this.activeSlide);
 
       if(destination.index == 0) {
         console.log('lock');
@@ -172,8 +229,12 @@ export default {
 
 @import '../assets/variables';
 
+.flip {
+  //transform: rotateX(90deg);
+}
+
 .implode {
-  transform: scale(0.8);
+  transform: scale(0.9);
   opacity: 0.4;
   position: absolute;
 }
@@ -199,12 +260,12 @@ export default {
 
 .invisible {
   //opacity: 0;
-  transition: 2s;
+  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .visible {
   opacity: 1;
-  transition: 2s;
+  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .clouds-container {
@@ -214,6 +275,7 @@ export default {
   .cloud {
     //background: blue;
     //transform: translateZ(3px);
+    opacity: 1 !important;
     width: 100px;
     height: 80px;
     position: absolute;
@@ -221,13 +283,14 @@ export default {
     background-size: contain;
     background-repeat: no-repeat;
     animation: sway 12s ease-in-out infinite;
+    //z-index: -1;
   }
 
   .cloud1 {
     left: -25px;
     bottom: 400px;
     background-image: url("../assets/SVG/CLOUDS/Cloud1.svg");
-    animation-delay: 2s;
+    //animation-delay: 2s;
     animation-duration: 10s;
   }
 
@@ -235,7 +298,7 @@ export default {
     left: 300px;
     bottom: 220px;
     background-image: url("../assets/SVG/CLOUDS/Cloud2.svg");
-    animation-delay: 6s;
+    //animation-delay: 6s;
     animation-duration: 11s;
   }
 
@@ -243,15 +306,79 @@ export default {
     right: 340px;
     top: 100px;
     background-image: url("../assets/SVG/CLOUDS/Cloud3.svg");
-    animation-delay: 1s;
+    //animation-delay: 1s;
   }
 
   .cloud4 {
     right: -40px;
     bottom: 180px;
     background-image: url("../assets/SVG/CLOUDS/Cloud4.svg");
-    animation-delay: 12s;
+    //animation-delay: 12s;
     animation-duration: 9s;
+  }
+
+  .cloud5 {
+    right: -40px;
+    bottom: 180px;
+    background-image: url("../assets/SVG/CLOUDS/Cloud5.svg");
+    //animation-delay: 12s;
+    animation-duration: 9s;
+  }
+
+  .cloud6 {
+    left: 40px;
+    bottom: 480px;
+    background-image: url("../assets/SVG/CLOUDS/Cloud6.svg");
+    //animation-delay: 19s;
+    animation-duration: 10s;
+  }
+
+    .cloud7 {
+    left: 340px;
+    bottom: 280px;
+    background-image: url("../assets/SVG/CLOUDS/Cloud7.svg");
+    //animation-delay: 12s;
+    animation-duration: 17s;
+  }
+
+    .cloud8 {
+    left: 800px;
+    bottom: 100px;
+    background-image: url("../assets/SVG/CLOUDS/Cloud8.svg");
+    //animation-delay: 11s;
+    animation-duration: 11s;
+  }
+
+    .cloud9 {
+    left: 520px;
+    bottom: 580px;
+    background-image: url("../assets/SVG/CLOUDS/Cloud9.svg");
+    //animation-delay: 12s;
+    animation-duration: 13.5s;
+  }
+
+    .cloud10 {
+    left: 900px;
+    top: 60px;
+    background-image: url("../assets/SVG/CLOUDS/Cloud10.svg");
+    //animation-delay: 10s;
+    animation-duration: 10.5s;
+  }
+
+    .cloud11 {
+    right: 60px;
+    top: 180px;
+    background-image: url("../assets/SVG/CLOUDS/Cloud11.svg");
+    //animation-delay: 12s;
+    animation-duration: 13s;
+  }
+
+    .cloud12 {
+    right: 140px;
+    bottom: 110px;
+    background-image: url("../assets/SVG/CLOUDS/Cloud12.svg");
+    //animation-delay: 14s;
+    animation-duration: 14s;
   }
 }
 
@@ -287,7 +414,7 @@ h4 {
   background-position: center;
   background-size: contain;
   animation: float 16s ease-in-out infinite;
-  transition: transform 1.5s, margin opacity 2s;
+  transition: transform 2s, margin opacity 2s;
   //background: red;
 
   &:hover {
@@ -310,7 +437,7 @@ h4 {
     margin: 0px -50px 240px 0px;
     right: -50px;
     opacity: 0.3;
-    transition: 2s;
+    transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .home-section {
@@ -445,9 +572,137 @@ h4 {
   background-size: contain;
   background-repeat: repeat-x;
   animation: move-left 180s linear forwards infinite;
+  z-index: 9999;
 }
 
 .main-stuff {
   //margin-bottom: 300px;
+}
+
+a {
+    text-decoration: none;
+    color: white !important;
+}
+
+.contact-other {
+    margin-top: $gap * 2;
+}
+
+.sb-icon {
+    background: black;
+    height: 64px;
+    width: 64px;
+    margin-right: 32px;
+    background-size: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+}
+
+.ig {
+    background-image: url('../assets/sm/ig.svg');
+}
+
+.bh {
+    background-image: url('../assets/sm/bh.svg');
+}
+
+.li {
+    background-image: url('../assets/sm/li.svg');
+}
+
+.email {
+    background-image: url('../assets/sm/email.svg');
+}
+
+.cv {
+    background-image: url('../assets/sm/resume.svg');
+    background-size: 40%;
+}
+
+.sb {
+    //background: red;
+    height: 64px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    //padding-left: 36px;1
+    margin-bottom: 12px;
+    transition: 300ms;
+    cursor: none !important;
+
+    span {
+        font-size: 20px;
+    }
+
+    &:hover {
+        //opacity: 0.4 !important;
+        transform: scale(1.1);
+    }
+
+}
+
+.sb-cv {
+    pointer-events: none;
+}
+
+.contact-container {
+    //background: green;
+    display: flex;
+    //padding: $gap;
+    justify-content: center;
+    text-align: left;
+    height: 100vh !important;
+    align-items: center;
+}
+
+.about-me {
+    //background: blue;
+    padding: 0px;
+    margin: 0px;
+    width: 20%;
+    text-align: left;
+    margin-right: $gap * 4;
+    line-height: 1.5;
+    font-size: 19px;
+
+}
+
+.contact-buttons {
+    //background: orange;
+    width: max-content;
+    height: max-content;
+    text-align: left;
+    padding: $gap;
+    margin-top: 64px;
+
+    .social-button {
+        background: blue;
+    }
+}
+
+.works-list {
+  //background:blue;
+  position: absolute;
+  right: 220px;
+  width: max-content;
+  text-align: right;
+
+  ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+
+    li {
+      margin-bottom: $gap;
+      font-size: 48px;
+      font-weight: bold;
+      transition: 300ms;
+
+      &:hover {
+        transform: translate(-24px, 0px);
+      }
+    }
+  }
 }
 </style>

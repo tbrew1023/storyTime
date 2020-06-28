@@ -1,13 +1,28 @@
 <template>
   <div id="app">
-    <!--CustomCursor
-      :targets="['img', 'a', 'button', 'your-hover-class']"
-      :circleColor="'#fff'"
-      :circleColorHover="'#2f2f2f'"
-      :dotColor="'#2f2f2f'"
-      :dotColorHover="'lightgray'"
-      :hoverSize="1.8"
-    ></CustomCursor-->
+    <div class="loading-veil">
+      <div class="loading-veil-inner">
+        <div class="load-cat"></div>
+        <div class="load-text">
+            <div class="load-wrapp">
+              <div class="load-6">
+                <div class="letter-holder" style="display:flex; justify-content: center">
+                  <div class="l-1 letter"><p>L</p></div>
+                  <div class="l-2 letter"><p>o</p></div>
+                  <div class="l-3 letter"><p>a</p></div>
+                  <div class="l-4 letter"><p>d</p></div>
+                  <div class="l-5 letter"><p>i</p></div>
+                  <div class="l-6 letter"><p>n</p></div>
+                  <div class="l-7 letter"><p>g</p></div>
+                  <div class="l-8 letter"><p>.</p></div>
+                  <div class="l-9 letter"><p>.</p></div>
+                  <div class="l-10 letter"><p>.</p></div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
     <div class="cc" :class="[ 'g-cursor', { 'g-cursor_hover': hover }, {'g-cursor_hide': hideCursor} ]">
       <div :style="cursorCircle" class="g-cursor__circle"></div>
       <div class="g-cursor__point" ref="point" :style="cursorPoint"></div>
@@ -16,13 +31,13 @@
       <h1 class="main-title">eric li</h1>
       <div class="link-list hoverable">
         <ul>
-          <li><span>></span><router-link class="hoverable" to="/#home" v-on:click.native="handleNav(1)">home</router-link></li>
-          <li><span>></span><router-link class="hoverable" to="/#work" v-on:click.native="handleNav(2)">work</router-link></li>
-          <li><span>></span><router-link class="hoverable" to="/contact">contact</router-link></li>
+          <li @click="$refs.fullpage.api.moveTo(1)" class="hoverable"><span>></span>Home</li>
+          <li @click="$refs.fullpage.api.moveTo(2)" class="hoverable"><span>></span>Work</li>
+          <li @click="$refs.fullpage.api.moveTo(3)" class="hoverable"><span>></span>Contact</li>
         </ul>
       </div>
     </div>
-    <router-view :dataRef='dataRef' />
+    <router-view :dataRef='dataRef' :options="options" />
   </div>
 </template>
 
@@ -37,6 +52,18 @@ export default {
   },
   data() {
     return {
+      options: {
+        scrollingSpeed: 2000,
+        fadingEffect: true,
+        setAutoscrolling: false,
+        //easingcss3: 'cubic-bezier(0.87, 0, 0.13, 1)', //expo
+        //easingcss3: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)', //bounce
+        easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)',
+        anchors: ['home','work'],
+        onLeave: (origin, destination, direction) => {
+          this.handleLeave(origin, destination, direction);
+        }
+      },
       dataRef: {},
       xChild: 0,
       yChild: 0,
@@ -112,6 +139,48 @@ export default {
 </script>
 
 <style lang="scss">
+html {
+  transition: filter 1s;
+}
+
+.loading-veil {
+  display: none;
+  background: rgba(black, 1);
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  margin: 0px;
+  padding: 0px;
+  pointer-events: none;
+  z-index: 99999;
+
+  .load-cat {
+    background-image: url('assets/4x/cat-mono-fill.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 240px;
+    height: 400px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    top: 260px;
+    border-radius: 8px;
+  }
+
+  .load-text {
+    margin-top: 40px;
+    text-align: center;
+    position: absolute;
+    margin: auto;
+    left: 0px;
+    right: 0px;
+    top: 660px;
+    font-size: 18px;
+  }
+}
+
 .cc {
   position: absolute;
 }
@@ -239,15 +308,16 @@ p {
       position: fixed;
       width: 36px;
       height: 36px;
-      border: 4px solid rgba(white, 0.5);
+      border: 4px solid rgba(white, 0.8);
       //background: rgba(white,0.3);
       border-radius: 100%;
       z-index: 5555;
       backface-visibility: hidden;
       transition: 
+        margin 0.6s ease,
         opacity 0.6s ease,
         width 0.6s ease,
-        height 0.6s ease;
+        height 0.6s ease,
     }
 
     &__point {
@@ -263,16 +333,26 @@ p {
       z-index: 55555555;
       backface-visibility: hidden;
       will-change: transform;
+      transition:
+        margin .4s ease,
+        opacity .4s ease,
+        width .4s ease,
+        height .4s ease;
     }
 
     &_hover {
       .g-cursor__point {
-          opacity: 0.8;
-          //width: 40px;
-          //height: 40px;
+          //opacity: 0.7;
+          width: 36px;
+          height: 36px;
+          margin-left: -12px;
+          margin-top: -12px;
+          background: white;
+          mix-blend-mode: difference;
           //background: rgba(white, 1);
           //border-color: white;
           transition: 
+            margin .4s ease,
             width .4s ease,
             height .4s ease,
             opacity .4s ease,
@@ -281,15 +361,68 @@ p {
 
         .g-cursor__circle {
           opacity: 0;
-          width: 5px;
-          height: 5px;
+          width: 3px;
+          height: 3px;
+          margin-left: 15px;
+          margin-top: 15px;
           //background: rgba(white, 1);
           //border-color: transparent;
           transition: 
+            margin .4s ease,
             width .4s ease,
             height .4s ease,
             opacity .4s ease;
       }
     }
   }
+
+// ---------- load letter stuff ----------
+
+.load-6 .letter {
+  animation-name: loadingF;
+  animation-duration: 1.6s;
+  animation-iteration-count: infinite;
+  animation-direction: linear;
+}
+
+.l-1 {
+  animation-delay: 0.48s;
+}
+.l-2 {
+  animation-delay: 0.6s;
+}
+.l-3 {
+  animation-delay: 0.72s;
+}
+.l-4 {
+  animation-delay: 0.84s;
+}
+.l-5 {
+  animation-delay: 0.96s;
+}
+.l-6 {
+  animation-delay: 1.08s;
+}
+.l-7 {
+  animation-delay: 1.2s;
+}
+.l-8 {
+  animation-delay: 1.32s;
+}
+.l-9 {
+  animation-delay: 1.44s;
+}
+.l-10 {
+  animation-delay: 1.56s;
+}
+
+@keyframes loadingF {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+  }
+}
 </style>

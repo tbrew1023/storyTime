@@ -27,17 +27,7 @@
       <div :style="cursorCircle" class="g-cursor__circle"></div>
       <div class="g-cursor__point" ref="point" :style="cursorPoint"></div>
     </div>
-    <div id="nav" class="hoverable">
-      <h1 class="main-title">eric li</h1>
-      <div class="link-list hoverable">
-        <ul>
-          <li @click="$refs.fullpage.api.moveTo(1)" class="hoverable"><span>></span>Home</li>
-          <li @click="$refs.fullpage.api.moveTo(2)" class="hoverable"><span>></span>Work</li>
-          <li @click="$refs.fullpage.api.moveTo(3)" class="hoverable"><span>></span>Contact</li>
-        </ul>
-      </div>
-    </div>
-    <router-view :dataRef='dataRef' :options="options" />
+    <router-view :dataRef='dataRef' />
   </div>
 </template>
 
@@ -52,18 +42,6 @@ export default {
   },
   data() {
     return {
-      options: {
-        scrollingSpeed: 2000,
-        fadingEffect: true,
-        setAutoscrolling: false,
-        //easingcss3: 'cubic-bezier(0.87, 0, 0.13, 1)', //expo
-        //easingcss3: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)', //bounce
-        easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)',
-        anchors: ['home','work'],
-        onLeave: (origin, destination, direction) => {
-          this.handleLeave(origin, destination, direction);
-        }
-      },
       dataRef: {},
       xChild: 0,
       yChild: 0,
@@ -237,53 +215,6 @@ p {
   padding: 0px;
   margin: 36px;
   font-size: 64px;
-}
-
-#nav {
-  position: fixed;
-  z-index: 9999;
-
-  h1 {
-    padding-left: 18px;
-  }
-
-  ul {
-    list-style: none;
-    text-align: left;
-    font-family: 'Inconsolata', monospace;
-
-    li {
-      margin-top: 6px;
-      font-size: 18px;
-
-      &:hover {
-        span {
-          opacity: 1;
-          padding-right: 8px;
-        }
-      }
-
-      span {
-        opacity: 0;
-        margin-right: 12px;
-        transition: 300ms;
-        font-weight: bold;
-      }
-    }
-  }
-
-  a {
-    color: white;
-    text-decoration: none;
-    opacity: 0.7;
-    cursor: none;
-
-    &.router-link-exact-active {
-      color: white;
-      opacity: 1;
-      font-weight: bold;
-    }
-  }
 }
 
 // --------- cursor stuff ----------

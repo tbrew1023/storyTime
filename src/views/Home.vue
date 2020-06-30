@@ -1,5 +1,17 @@
 <template>
   <div class="home">
+
+    <div id="nav" class="hoverable">
+      <h1 class="main-title">eric li</h1>
+      <div class="link-list hoverable">
+        <ul>
+          <li @click="() => { $refs.fullpage.api.moveSlideLeft(); $refs.fullpage.api.moveTo(1); }" class="hoverable"><span>></span>Home</li>
+          <li @click="() => { $refs.fullpage.api.moveSlideLeft(); $refs.fullpage.api.moveTo(2); }" class="hoverable"><span>></span>Work</li>
+          <li @click="() => { $refs.fullpage.api.moveSlideLeft(); $refs.fullpage.api.moveTo(3); }" class="hoverable"><span>></span>Contact</li>
+        </ul>
+      </div>
+    </div>
+
     <full-page ref="fullpage" :options="options" id="fullpage">
 
       <!-- CONTACT PAGE -->
@@ -16,31 +28,31 @@
               <h2>
                 <div class="clock-inner">
                   <h3>chicago</h3>
-                  <h4>{{ chicago }}</h4>
+                  <h4>{{ clock.chicago }}</h4>
                 </div>
               </h2>
               <h2>
                 <div class="clock-inner">
                   <h3>tokyo</h3>
-                  <h4>{{ tokyo }}</h4>
+                  <h4>{{ clock.tokyo }}</h4>
                 </div>
               </h2>
               <h2>
                 <div class="clock-inner">
                   <h3>new york</h3>
-                  <h4>{{ newYork }}</h4>
+                  <h4>{{ clock.newYork }}</h4>
                 </div>
               </h2>
               <h2>
                 <div class="clock-inner">
                   <h3>sydney</h3>
-                  <h4>{{ sydney }}</h4>
+                  <h4>{{ clock.sydney }}</h4>
                 </div>
               </h2>
               <h2>
                 <div class="clock-inner">
                   <h3>london</h3>
-                  <h4>{{ london }}</h4>
+                  <h4>{{ clock.london }}</h4>
                 </div>
               </h2>
             </div>
@@ -63,29 +75,114 @@
 
       <!-- MAIN WORKS PAGE -->
       <section class="section">
-        <div class="section-inner">
-          <div class="works-list">
-            <ul>
-              <li class="hoverable" v-for="(i) in works" :key="i.index"><span class="hoverable">{{ i }}</span></li>
-            </ul>
+        <div class="slide work-slide">
+          <div :class="( modalActive ? 'modal-active' : 'modal-inactive' )">
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
+              <li>test</li>
           </div>
-          <div class="clouds-container">
-            <div class="cloud cloud5"></div>
-            <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
-            <div class="cloud cloud7" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
-            <div class="cloud cloud8"></div>
-            <div class="cloud cloud9" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
-            <div class="cloud cloud10" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
-            <div class="cloud cloud11" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
-            <div class="cloud cloud12"></div>
+          <div class="section-inner works-inner">
+            <div class="preview" :class="( hover ? 'preview-appear' : 'preview-disappear' )"></div>
+            <div class="works-list" :class="( activeSection == 1 && activeSlide == 1 ? 'works-enter' : 'works-leave' )">
+              <ul>
+                <li @click="toggleWorksModal(index)" @mouseenter="handleMouseEnter(index)" @mouseleave="handleMouseLeave(index)" class="hoverable" v-for="(i, index) in works" :key="i.index"><span class="hoverable">{{ i }}</span></li>
+              </ul>
+              <div @click="() => { $refs.fullpage.api.moveSlideRight(); }" class="more-btn hoverable"><p class="hoverable">+ More work</p></div>
+            </div>
+            <div class="clouds-container" :class="( hover ? 'blur' : 'clear' )" style="transition: 1s">
+              <div class="cloud cloud5"></div>
+              <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
+              <div class="cloud cloud7" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
+              <div class="cloud cloud8"></div>
+              <div class="cloud cloud9" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
+              <div class="cloud cloud10" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
+              <div class="cloud cloud11" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
+              <div class="cloud cloud12"></div>
+            </div>
           </div>
+        </div>
+        <div class="slide more-work">
+          <div class="more-work-container">
+            <h1>Extra Work</h1>
+            <div class="more-work-grid">
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+            </div>
+          </div>
+          <div @click="() => { $refs.fullpage.api.moveSlideLeft(); }" class="works-back-button hoverable"><span class="arrow">🡨</span> Back</div>
         </div>
       </section>
 
       <!-- CONTACT PAGE -->
       <section class="section">
         <div class="contact-container">
-          <div class="clouds-container flip">
+          <div class="clouds-container">
             <div class="cloud cloud5"></div>
             <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
             <div class="cloud cloud8"></div>
@@ -93,62 +190,74 @@
             <div class="cloud cloud11" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
             <div class="cloud cloud12"></div>
           </div>
-          <div class="about-me">
-              <h1>About me.</h1>
-              <p>
-                  What is there to say about me? Well, I'm a young guy trying to make his mark in this big world. I enjoy designing anything but I'm best at digital design and branding. I hope to one day take these skills to start my own business. In the mean time I enjoy producing beats and gardening.
-                  <br><br>
-                  I grew up in the Chicagoland area and went to DePaul University. I'm a quick learner, open minded, and like coming up with creative solutions.
-                  <br><br>
-                  Anyways, lets link up and get that bread. 
-              </p>
-          </div>
-          <div class="contact-buttons">
-              <a href="https://www.instagram.com/e.z.li/"><div class="sb hoverable"><div class="sb-icon ig hoverable"></div><span class="hoverable">e.z.li</span></div></a>
-              <a href="https://www.behance.net/ericzzli/moodboards"><div class="sb hoverable"><div class="sb-icon bh hoverable"></div><span class="hoverable">ericzzli</span></div></a>
-              <a href="https://www.linkedin.com/in/ericzzli/"><div class="sb hoverable"><div class="sb-icon li hoverable"></div><span class="hoverable">ericzzli</span></div></a>
-              <div class="contact-other">
-                  <a href="mailto:ezl@protonmail.com"><div class="sb hoverable"><div class="sb-icon email hoverable"></div><span class="hoverable">eric@ericzzli.com</span></div></a>
-                  <div class="sb sb-cv"><div class="sb-icon cv hoverable"></div><span>CV on request</span></div>
-              </div>
+          <div class="contact-main" :class="( activeSection == 2 ? '' : 'stage-down' )">
+            <div class="about-me">
+                <h1>About me.</h1>
+                <p>
+                    What is there to say about me? Well, I'm a young guy trying to make his mark in this big world. I enjoy designing anything but I'm best at digital design and branding. 
+                    I hope to one day take these skills to start my own business. In the mean time I enjoy producing beats and gardening.
+                    <br><br>
+                    I grew up in the Chicagoland area and went to DePaul University. I'm a quick learner, open minded, and like coming up with creative solutions.
+                    <br><br>
+                    Anyways, lets link up and get that bread. 
+                </p>
+            </div>
+            <div class="contact-buttons">
+                <a href="https://www.instagram.com/e.z.li/"><div class="sb hoverable"><div class="sb-icon ig hoverable"></div><span class="hoverable">e.z.li</span></div></a>
+                <a href="https://www.behance.net/ericzzli/moodboards"><div class="sb hoverable"><div class="sb-icon bh hoverable"></div><span class="hoverable">ericzzli</span></div></a>
+                <a href="https://www.linkedin.com/in/ericzzli/"><div class="sb hoverable"><div class="sb-icon li hoverable"></div><span class="hoverable">ericzzli</span></div></a>
+                <div class="contact-other">
+                    <a href="mailto:ezl@protonmail.com"><div class="sb hoverable"><div class="sb-icon email hoverable"></div><span class="hoverable">eric@ericzzli.com</span></div></a>
+                    <div class="sb sb-cv"><div class="sb-icon cv hoverable"></div><span>CV on request</span></div>
+                </div>
+            </div>
           </div>
         </div>
       </section>
-
     </full-page>
   </div>
 </template>
 
 <script>
 //import firebase from 'firebase'
-import moment from 'moment-timezone'
+import moment from 'moment-timezone';
 
 export default {
   name: 'Home',
   data() {
     return {
-      works: ['Yang Redesign', 'Old Orchard', 'Coinbase', 'ubloe.com'],
       options: {
+        normalScrollElements: '.test-container .modal-active .modal-inactive .more-work-grid .more-work-container',
+        controlArrows: false,
+        loopHorizontal: false,
         scrollingSpeed: 2000,
         fadingEffect: true,
-        setAutoscrolling: false,
         //easingcss3: 'cubic-bezier(0.87, 0, 0.13, 1)', //expo
         //easingcss3: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)', //bounce
         easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)',
-        anchors: ['home','work'],
+        anchors: ['home','work', 'contact'],
         onLeave: (origin, destination, direction) => {
           this.handleLeave(origin, destination, direction);
+        },
+        onSlideLeave: (origin, destination, direction) => {
+          this.handleSlideLeave(origin, destination, direction);
         }
       },
+      works: ['Yang Redesign', 'Old Orchard', 'Coinbase', 'ubloe.com'],
       triggerUp: false,
       triggerDown: false,
       fix: false,
-      chicago: '',
-      tokyo: '',
-      newYork: '',
-      sydney: '',
-      london: '',
-      activeSlide: 0
+      activeSection: 0,
+      activeSlide: 1,
+      hover: false,
+      modalActive: false,
+      clock: {
+        chicago: '',
+        tokyo: '',
+        newYork: '',
+        sydney: '',
+        london: ''
+      },
     }
   },
   props: {
@@ -164,11 +273,11 @@ export default {
     var sydney = moment.tz('Australia/Sydney').format();
     var london = moment.tz('Europe/London').format();
 
-    this.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
-    this.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
-    this.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
-    this.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
-    this.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
+    this.clock.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
+    this.clock.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
+    this.clock.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
+    this.clock.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
+    this.clock.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
   },
   mounted() {
     setInterval(() => {
@@ -182,9 +291,9 @@ export default {
       console.log('destination: ', destination);
       console.log('direction: ', direction);
   
-      this.activeSlide = destination.index;
+      this.activeSection = destination.index;
 
-      console.log('activeSlide: ', this.activeSlide);
+      console.log('activeSection: ', this.activeSection);
 
       if(destination.index == 0) {
         console.log('lock');
@@ -204,6 +313,35 @@ export default {
         this.triggerUp = false;
       }
     },
+    handleSlideLeave(origin, destination, direction) {
+      console.clear();
+      console.log('origin: ', origin);
+      console.log('destination: ', destination);
+      console.log('direction: ', direction);
+  
+      this.activeSlide = destination.index;
+
+      console.log('activeSlide: ', this.activeSlide);
+
+      if(direction == 'up') {
+        this.triggerUp = true;
+        this.triggerDown = false;
+      }
+      else {
+        this.triggerDown = true;
+        this.triggerUp = false;
+      }
+    },
+    handleMouseEnter(i) {
+      console.clear();
+      console.log('enter' , i);
+      this.hover = true;
+    },
+    handleMouseLeave(i) {
+      console.clear();
+      console.log('leave', i);
+      this.hover = false;
+    },
     handleScroll() {
       //console.log(scrollY);
       //this.bannerOffset = scrollY;
@@ -212,14 +350,26 @@ export default {
       var chicago = moment.tz('America/Chicago').format();
       var tokyo = moment.tz('Asia/Tokyo').format();
       var newYork = moment.tz('America/New_York').format();
-      var sydney = moment.tz('Sydney/Sydney').format();
+      var sydney = moment.tz('Australia/Sydney').format();
       var london = moment.tz('Europe/London').format();
 
-      this.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
-      this.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
-      this.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
-      this.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
-      this.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
+      this.clock.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
+      this.clock.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
+      this.clock.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
+      this.clock.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
+      this.clock.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
+    },
+    toggleWorksModal(i) {
+      console.log('CLICK', i);
+
+      this.modalActive = !this.modalActive;
+
+      if(this.modalActive) {
+        //this.$refs.fullpage.api.setAutoScrolling(false);
+      }
+      else {
+        //this.$refs.fullpage.api.setAutoScrolling(true);
+      }
     }
   }
 }
@@ -228,6 +378,268 @@ export default {
 <style lang="scss" scoped>
 
 @import '../assets/variables';
+
+.stage-in {
+  opacity: 0;
+  transition: 1s;
+  height: 250px;
+}
+
+.more-work-container {
+  height: 100vh;
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-align: left;
+
+  h1 {
+    margin-left: 375px;
+    margin-bottom: 42px;
+    font-size: 48px;
+  }
+}
+
+#nav {
+  position: fixed;
+  z-index: 9999;
+
+  h1 {
+    padding-left: 18px;
+  }
+
+  ul {
+    list-style: none;
+    text-align: left;
+    font-family: 'Inconsolata', monospace;
+
+    li {
+      margin-top: 6px;
+      font-size: 18px;
+
+      &:hover {
+        span {
+          opacity: 1;
+          padding-right: 8px;
+        }
+      }
+
+      span {
+        opacity: 0;
+        margin-right: 12px;
+        transition: 300ms;
+        font-weight: bold;
+      }
+    }
+  }
+
+  a {
+    color: white;
+    text-decoration: none;
+    opacity: 0.7;
+    cursor: none;
+
+    &.router-link-exact-active {
+      color: white;
+      opacity: 1;
+      font-weight: bold;
+    }
+  }
+}
+
+.more-work-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  grid-gap: 18px;
+  bottom: 0px; 
+  overflow: auto;
+  height: 660px;
+  padding-right: 18px;
+}
+
+.work-item {
+  background: white;
+  height: 250px;
+  transition: 1.2s;
+
+  &:hover {
+    //transform: scale(0.95);
+    filter:hue-rotate(145deg);
+  }
+
+  &:nth-child(1) {
+    transition-delay: 1.4s;  
+  }
+
+  &:nth-child(2) {
+    transition-delay: 1.2s;  
+  }
+
+  &:nth-child(3) {
+    transition-delay: 1s;  
+  }
+
+  &:nth-child(4) {
+    transition-delay: 1.6s;  
+  }
+
+  &:nth-child(5) {
+    transition-delay: 1.4s;  
+  }
+
+  &:nth-child(6) {
+    transition-delay: 1.2s;  
+  }
+
+  &:nth-child(7) {
+    transition-delay: 1.8s;  
+  }
+
+  &:nth-child(8) {
+    transition-delay: 1.6s;  
+  }
+
+  &:nth-child(9) {
+    transition-delay: 1.4s;  
+  }
+}
+
+.works-back-button {
+  //background: red;
+  width: 200px;
+  margin: auto;
+  position: absolute;
+  bottom: 80px;
+  left: calc(100vw);
+  font-size: 22px;
+
+  .arrow {
+    transition: 300ms;
+  }
+
+  &:hover {
+    .arrow {
+      margin-left: -18px;
+      margin-right: 18px;
+    }
+  }
+
+  strong {
+    background: green;
+  }
+}
+
+.work-slide {
+  width: 100%;
+  height: 100vh;
+}
+
+.test-container {
+  overflow: scroll;
+  background: orange;
+  height: 300px;
+  width: 600px;
+  z-index: 9999;
+}
+
+.modal-active {
+  background: black;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 999;
+  transition: 600ms;
+  margin: auto;
+  left: 0px;
+  top: 0px;
+  overflow: auto;
+}
+
+.modal-inactive {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.more-btn {
+  background: black;
+  color: white;
+  width: max-content;
+  padding: 0px 24px 0px 24px;
+  float: right;
+  border-radius: 12px;
+  font-weight: bold;
+  transition: opacity 300ms, transform 1s;
+  margin-top: 42px;
+}
+
+.contact-main {
+  transition-delay: 2s;
+  transition: 2s;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.stage-down {
+  opacity: 0;
+  transition: 2s;
+  transform: translate(0px, 300px);
+}
+
+.stage-in {
+  //background: red;
+  opacity: 0.4;
+  transform: scale(0.9);
+  transition: 2s;
+  transition-delay: 0s !important;
+}
+
+.stage-left {
+  transform: translate(120px, 0px);
+  opacity: 0px;
+}
+
+.blur {
+  filter: blur(24px);
+}
+
+.clear {
+  filter: blur(0px);
+}
+
+.preview-appear  {
+  background: white !important;
+  opacity: 1;
+}
+
+.preview-disappear {
+  //transform: translate(42px, 0px);
+  //background: yellow !important;
+  transform: translate(120px, 0px);
+  transition-delay: 200ms !important;
+  opacity: 0;
+}
+
+.preview {
+  //background: red;
+  border-radius: 12px;
+  width: 650px;
+  height: 350px;
+  //margin-right: 220px;
+  position: absolute;
+  margin: auto;
+  left: 420px;
+  //right: 0px;
+  top: -120px;
+  bottom: 0px;
+  transition: 1s ease;
+  z-index: 999;
+}
 
 .flip {
   //transform: rotateX(90deg);
@@ -269,8 +681,10 @@ export default {
 }
 
 .clouds-container {
-  //perspective: 8px;
-  perspective-origin: 0%;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  z-index: -1;
 
   .cloud {
     //background: blue;
@@ -351,7 +765,7 @@ export default {
 
     .cloud9 {
     left: 520px;
-    bottom: 580px;
+    bottom: 600px;
     background-image: url("../assets/SVG/CLOUDS/Cloud9.svg");
     //animation-delay: 12s;
     animation-duration: 13.5s;
@@ -450,8 +864,9 @@ h4 {
   flex-direction: column; 
   justify-content: center;
   align-items: center;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
+  top: 0px;
 
   h2 {
     text-align: center;
@@ -586,6 +1001,10 @@ a {
 
 .contact-other {
     margin-top: $gap * 2;
+
+    .sb {
+      padding-right: $gap;
+    }
 }
 
 .sb-icon {
@@ -596,6 +1015,8 @@ a {
     background-size: 50%;
     background-position: center;
     background-repeat: no-repeat;
+    border-radius: 12px 0px 0px 12px;
+    transition: 300ms;
 
 }
 
@@ -632,12 +1053,20 @@ a {
     cursor: none !important;
 
     span {
-        font-size: 20px;
+        font-size: 22px;
+        font-weight: bold;
     }
 
     &:hover {
-        //opacity: 0.4 !important;
-        transform: scale(1.1);
+      background: white;
+      border-radius: 12px;
+      color: black;
+      //filter:invert(1);
+
+      .sb-icon {
+        //background-color: white;
+        filter: invert(1);
+      }
     }
 
 }
@@ -654,6 +1083,8 @@ a {
     text-align: left;
     height: 100vh !important;
     align-items: center;
+    transition: 2s;
+    transition-delay: 1s;
 }
 
 .about-me {
@@ -665,7 +1096,7 @@ a {
     margin-right: $gap * 4;
     line-height: 1.5;
     font-size: 19px;
-
+    transition: 600ms;
 }
 
 .contact-buttons {
@@ -681,12 +1112,44 @@ a {
     }
 }
 
+.works-enter {
+  li:nth-child(1) {
+    //background: blue;
+    transition-delay: 1s !important;
+  }
+  li:nth-child(2) {
+    //background: blue;
+    transition-delay: 1.2s !important;
+  }
+  li:nth-child(3) {
+    //background: blue;
+    transition-delay: 1.4s !important;
+  }
+  li:nth-child(4) {
+    //background: blue;
+    transition-delay: 1.6s !important;
+  }
+  .more-btn {
+    //background: blue;
+    transition-delay: 1.8s;
+  }
+}
+
+.works-leave {
+  li, .more-btn {
+    //background: red;
+    opacity: 0;
+    transform: translate(120px, 0px);
+  }
+}
+
 .works-list {
   //background:blue;
   position: absolute;
-  right: 220px;
+  right: 180px;
   width: max-content;
   text-align: right;
+  transition: 2s;
 
   ul {
     list-style: none;
@@ -697,10 +1160,21 @@ a {
       margin-bottom: $gap;
       font-size: 48px;
       font-weight: bold;
-      transition: 300ms;
+      transition: 1s;
+
+      span {
+        transition: 300ms;
+        padding-left: 12px;
+        padding-right: 12px;
+        border-radius: 12px;
+      }
 
       &:hover {
-        transform: translate(-24px, 0px);
+        span {
+          background: white;
+          color: black;
+          //margin-right: 24px;
+        }
       }
     }
   }

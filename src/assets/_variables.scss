@@ -1,3 +1,7 @@
+// ---------- easing ----------
+
+$ezpz: cubic-bezier(0.65, 0, 0.35, 1);
+
 // ---------- dimensions ----------
 
 $gap: 36px;
@@ -43,5 +47,33 @@ $gap: 36px;
     }
     to {
         background-position-x: 3150px;
+    }
+}
+
+@keyframes preview-enter {
+    from {
+        transform: translate(64px, 0px);
+    }
+    to {
+        transform: translate(0px, 0px);
+    }
+}
+
+@keyframes preview-exit {
+    from {
+        transform: translate(0px, 0px);
+    }
+    to {
+        transform: translate(-64px, 0px);
+        opacity: 0;
+    }
+}
+
+@keyframes fly-right {
+    from {
+        
+    }
+    to {
+
     }
 }

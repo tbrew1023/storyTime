@@ -6,13 +6,14 @@ import firebase from 'firebase'
 import VueFullPage from 'vue-fullpage.js'
 
 var firebaseConfig = {
-  apiKey: "AIzaSyCkS0tpIKt8WWSDmJTi-Tc20BgEIRscmTc",
-  authDomain: "sitemind-6997f.firebaseapp.com",
-  databaseURL: "https://sitemind-6997f.firebaseio.com",
-  projectId: "sitemind-6997f",
-  storageBucket: "sitemind-6997f.appspot.com",
-  messagingSenderId: "935276287700",
-  appId: "1:935276287700:web:91da1a6a66cd2bbe9c8d41",
+  apiKey: "AIzaSyB-zAT4xbdFZoubcCBt2mvECj9GXtkOEu4",
+  authDomain: "ericzzli.firebaseapp.com",
+  databaseURL: "https://ericzzli.firebaseio.com",
+  projectId: "ericzzli",
+  storageBucket: "ericzzli.appspot.com",
+  messagingSenderId: "178942591194",
+  appId: "1:178942591194:web:3716fca0b66e3158a565e3",
+  measurementId: "G-5B06RPR4W2"
 };
 
 //initialize firebase

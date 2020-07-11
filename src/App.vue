@@ -274,10 +274,10 @@ p {
     &_hover {
       .g-cursor__point {
           //opacity: 0.7;
-          width: 36px;
-          height: 36px;
-          margin-left: -12px;
-          margin-top: -12px;
+          width: 48px;
+          height: 48px;
+          margin-left: -18px;
+          margin-top: -18px;
           background: white;
           mix-blend-mode: difference;
           //background: rgba(white, 1);

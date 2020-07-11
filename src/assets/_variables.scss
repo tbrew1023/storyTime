@@ -77,3 +77,13 @@ $gap: 36px;
 
     }
 }
+
+@keyframes flyleft {
+    from {
+        opacity: 0;
+        transform: translateX(48px, 0px);
+    }
+    to {
+        opacity: 1;
+    }
+}

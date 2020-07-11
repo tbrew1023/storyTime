@@ -1,3 +1,177 @@
+<script>
+import firebase from 'firebase'
+import moment from 'moment-timezone';
+
+export default {
+  name: 'Home',
+  data() {
+    return {
+      options: {
+        normalScrollElements: '.test-container .modal-active .modal-inactive .more-work-grid .more-work-container',
+        controlArrows: false,
+        loopHorizontal: false,
+        scrollingSpeed: 2000,
+        fadingEffect: true,
+        //easingcss3: 'cubic-bezier(0.87, 0, 0.13, 1)', //exponential
+        //easingcss3: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)', //bouncey
+        easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)', //swoopy
+        anchors: ['home','work', 'contact'],
+        onLeave: (origin, destination, direction) => {
+          this.handleLeave(origin, destination, direction);
+        },
+        onSlideLeave: (origin, destination, direction) => {
+          this.handleSlideLeave(origin, destination, direction);
+        }
+      },
+      works: ['Yang Redesign', 'Old Orchard', 'Coinbase', 'ubloe.com'],
+      projects: [],
+      triggerUp: false,
+      triggerDown: false,
+      fix: false,
+      activeSection: 0,
+      activeSlide: 1,
+      hover: false,
+      modalActive: false,
+      currentPreview: '',
+      clock: {
+        chicago: '',
+        tokyo: '',
+        newYork: '',
+        sydney: '',
+        london: ''
+      },
+    }
+  },
+  props: {
+    dataRef: Object
+  },
+  components: {
+
+  },
+  created() {
+    var chicago = moment.tz('America/Chicago').format();
+    var tokyo = moment.tz('Asia/Tokyo').format();
+    var newYork = moment.tz('America/New_York').format();
+    var sydney = moment.tz('Australia/Sydney').format();
+    var london = moment.tz('Europe/London').format();
+
+    this.clock.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
+    this.clock.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
+    this.clock.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
+    this.clock.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
+    this.clock.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
+  },
+  mounted() {
+    this.fetchProjects();
+    setInterval(() => {
+      this.tock();
+    }, 5000);
+  },
+  methods: {
+    fetchProjects() {
+      var self = this;
+
+      firebase.firestore().collection("projects").get().then((docs) => {
+        docs.forEach((doc) => {
+          self.projects.push(doc.data());
+        });
+        console.log(self.projects);
+      });
+    },
+    handleLeave(origin, destination, direction) {
+      console.clear();
+      console.log('origin: ', origin);
+      console.log('destination: ', destination);
+      console.log('direction: ', direction);
+  
+      this.activeSection = destination.index;
+
+      console.log('activeSection: ', this.activeSection);
+
+      if(destination.index == 0) {
+        console.log('lock');
+        this.fix = false;
+      }
+      else {
+        this.fix = true;
+        console.log('unlock');
+      }
+
+      if(direction == 'up') {
+        this.triggerUp = true;
+        this.triggerDown = false;
+      }
+      else {
+        this.triggerDown = true;
+        this.triggerUp = false;
+      }
+    },
+    handleSlideLeave(origin, destination, direction) {
+      console.clear();
+      console.log('origin: ', origin);
+      console.log('destination: ', destination);
+      console.log('direction: ', direction);
+  
+      this.activeSlide = destination.index;
+
+      console.log('activeSlide: ', this.activeSlide);
+
+      if(direction == 'up') {
+        this.triggerUp = true;
+        this.triggerDown = false;
+      }
+      else {
+        this.triggerDown = true;
+        this.triggerUp = false;
+      }
+    },
+    handleMouseEnter(i, index) {
+      console.clear();
+      console.log('enter' , index);
+      this.hover = true;
+      this.currentPreview = i.thumb;
+
+      console.log(this.currentPreview);
+    },
+    handleMouseLeave(i, index) {
+      console.clear();
+      console.log('leave', index);
+      this.hover = false;
+    },
+    toggleWorksModal(i, index) {
+      console.log('CLICK', index);
+
+      this.modalActive = !this.modalActive;
+      this.hover = false;
+
+      if(this.modalActive) {
+        //this.$refs.fullpage.api.setAutoScrolling(false);
+      }
+      else {
+        //this.$refs.fullpage.api.setAutoScrolling(true);
+      }
+    },
+    handleScroll() {
+      //console.log(scrollY);
+      //this.bannerOffset = scrollY;
+    },
+    tock() {
+      var chicago = moment.tz('America/Chicago').format();
+      var tokyo = moment.tz('Asia/Tokyo').format();
+      var newYork = moment.tz('America/New_York').format();
+      var sydney = moment.tz('Australia/Sydney').format();
+      var london = moment.tz('Europe/London').format();
+
+      this.clock.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
+      this.clock.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
+      this.clock.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
+      this.clock.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
+      this.clock.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
+    }
+  }
+}
+</script>
+
 <template>
   <div class="home">
 
@@ -12,8 +186,9 @@
       </div>
     </div>
 
-    <full-page ref="fullpage" :options="options" id="fullpage">
+    <div :class="( activeSection != 0 ? '' : 'stage-up' )" class="corner-cat"></div>
 
+    <full-page ref="fullpage" :options="options" id="fullpage">
       <!-- CONTACT PAGE -->
       <section class="section">
         <div class="section-inner">
@@ -67,7 +242,7 @@
             </div>
           </div>
           <div :class="( fix ? 'invisible dragon-after' : 'visible' )" class="dragon-container hoverable">
-            <p class="dragon-text">Or we could just chil....</p>
+            <p class="dragon-text">Or we could just chill....</p>
           </div>
           <div :class="( fix ? 'invisible parallax1' : 'visible' )" class="bottom-cloud-container"></div>
         </div>  
@@ -76,73 +251,33 @@
       <!-- MAIN WORKS PAGE -->
       <section class="section">
         <div class="slide work-slide">
-          <div :class="( modalActive ? 'modal-active' : 'modal-inactive' )">
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
-              <li>test</li>
+
+          <div class="modal" :class="( modalActive ? 'modal-active' : 'modal-inactive' )">
+            <h1>My Modal</h1>
+            <div @click="() => { modalActive = false; }" class="modal-back hoverable"><span class="arrow">🡨</span><span>Back</span></div>
           </div>
+
           <div class="section-inner works-inner">
-            <div class="preview" :class="( hover ? 'preview-appear' : 'preview-disappear' )"></div>
+
+            <div class="preview" :class="( hover ? 'preview-appear' : 'preview-disappear' )">
+              <div class="preview-loader"></div>
+              <div class="preview-inner" :style="'background-image: url(' + currentPreview + ')'"></div>
+            </div>
+            
             <div class="works-list" :class="( activeSection == 1 && activeSlide == 1 ? 'works-enter' : 'works-leave' )">
               <ul>
-                <li @click="toggleWorksModal(index)" @mouseenter="handleMouseEnter(index)" @mouseleave="handleMouseLeave(index)" class="hoverable" v-for="(i, index) in works" :key="i.index"><span class="hoverable">{{ i }}</span></li>
+                <li 
+                  v-for="(i, index) in projects"
+                  @click="toggleWorksModal(i, index)" 
+                  @mouseenter="handleMouseEnter(i, index)" 
+                  @mouseleave="handleMouseLeave(i, index)" 
+                  class="hoverable" 
+                  :key="i.index"
+                >
+                  <span class="hoverable">
+                    {{ i.title }}
+                  </span>
+                </li>
               </ul>
               <div @click="() => { $refs.fullpage.api.moveSlideRight(); }" class="more-btn hoverable"><p class="hoverable">+ More work</p></div>
             </div>
@@ -160,8 +295,8 @@
         </div>
         <div class="slide more-work">
           <div class="more-work-container">
-            <h1>Extra Work</h1>
-            <div class="more-work-grid">
+            <h1 :class="( activeSlide == 0 ? 'xtra-werk' : 'stage-up' )">Extra Work</h1>
+            <div class="more-work-grid"><!-- animates first 11 items rendered -->
               <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
               <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
               <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
@@ -175,7 +310,7 @@
               <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
             </div>
           </div>
-          <div @click="() => { $refs.fullpage.api.moveSlideLeft(); }" class="works-back-button hoverable"><span class="arrow">🡨</span> Back</div>
+          <div @click="() => { $refs.fullpage.api.moveSlideLeft(); }" :class="( activeSlide == 0 ? 'works-back-button hoverable' : 'stage-in' )"><span class="arrow">🡨</span> Back</div>
         </div>
       </section>
 
@@ -218,166 +353,67 @@
   </div>
 </template>
 
-<script>
-//import firebase from 'firebase'
-import moment from 'moment-timezone';
+<style lang="scss" scoped>
+@import '../assets/variables';
 
-export default {
-  name: 'Home',
-  data() {
-    return {
-      options: {
-        normalScrollElements: '.test-container .modal-active .modal-inactive .more-work-grid .more-work-container',
-        controlArrows: false,
-        loopHorizontal: false,
-        scrollingSpeed: 2000,
-        fadingEffect: true,
-        //easingcss3: 'cubic-bezier(0.87, 0, 0.13, 1)', //expo
-        //easingcss3: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)', //bounce
-        easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)',
-        anchors: ['home','work', 'contact'],
-        onLeave: (origin, destination, direction) => {
-          this.handleLeave(origin, destination, direction);
-        },
-        onSlideLeave: (origin, destination, direction) => {
-          this.handleSlideLeave(origin, destination, direction);
-        }
-      },
-      works: ['Yang Redesign', 'Old Orchard', 'Coinbase', 'ubloe.com'],
-      triggerUp: false,
-      triggerDown: false,
-      fix: false,
-      activeSection: 0,
-      activeSlide: 1,
-      hover: false,
-      modalActive: false,
-      clock: {
-        chicago: '',
-        tokyo: '',
-        newYork: '',
-        sydney: '',
-        london: ''
-      },
-    }
-  },
-  props: {
-    dataRef: Object
-  },
-  components: {
+.corner-cat {
+  background-image: url('../assets/SVG/cat-white.svg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: 2s;
+  transition-delay: 1s;
+  width: 80px;
+  height: 80px;
+  position: fixed;
+  margin: 36px;
+  right: 0px;
+  top: 0px;
+  z-index: 888;
+}
 
-  },
-  created() {
-    var chicago = moment.tz('America/Chicago').format();
-    var tokyo = moment.tz('Asia/Tokyo').format();
-    var newYork = moment.tz('America/New_York').format();
-    var sydney = moment.tz('Australia/Sydney').format();
-    var london = moment.tz('Europe/London').format();
-
-    this.clock.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
-    this.clock.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
-    this.clock.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
-    this.clock.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
-    this.clock.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
-  },
-  mounted() {
-    setInterval(() => {
-      this.tock();
-    }, 5000);
-  },
-  methods: {
-    handleLeave(origin, destination, direction) {
-      console.clear();
-      console.log('origin: ', origin);
-      console.log('destination: ', destination);
-      console.log('direction: ', direction);
+.modal-back {
+  //background: red;
+  position: absolute;
+  bottom: 36px;
+  left: 36px;
   
-      this.activeSection = destination.index;
+  span {
+    font-size: 28px !important;
+    margin-left: 24px;
+  }
 
-      console.log('activeSection: ', this.activeSection);
+  .arrow {
+    transition: 300ms;
+  }
 
-      if(destination.index == 0) {
-        console.log('lock');
-        this.fix = false;
-      }
-      else {
-        this.fix = true;
-        console.log('unlock');
-      }
-
-      if(direction == 'up') {
-        this.triggerUp = true;
-        this.triggerDown = false;
-      }
-      else {
-        this.triggerDown = true;
-        this.triggerUp = false;
-      }
-    },
-    handleSlideLeave(origin, destination, direction) {
-      console.clear();
-      console.log('origin: ', origin);
-      console.log('destination: ', destination);
-      console.log('direction: ', direction);
-  
-      this.activeSlide = destination.index;
-
-      console.log('activeSlide: ', this.activeSlide);
-
-      if(direction == 'up') {
-        this.triggerUp = true;
-        this.triggerDown = false;
-      }
-      else {
-        this.triggerDown = true;
-        this.triggerUp = false;
-      }
-    },
-    handleMouseEnter(i) {
-      console.clear();
-      console.log('enter' , i);
-      this.hover = true;
-    },
-    handleMouseLeave(i) {
-      console.clear();
-      console.log('leave', i);
-      this.hover = false;
-    },
-    handleScroll() {
-      //console.log(scrollY);
-      //this.bannerOffset = scrollY;
-    },
-    tock() {
-      var chicago = moment.tz('America/Chicago').format();
-      var tokyo = moment.tz('Asia/Tokyo').format();
-      var newYork = moment.tz('America/New_York').format();
-      var sydney = moment.tz('Australia/Sydney').format();
-      var london = moment.tz('Europe/London').format();
-
-      this.clock.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
-      this.clock.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
-      this.clock.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
-      this.clock.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
-      this.clock.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
-    },
-    toggleWorksModal(i) {
-      console.log('CLICK', i);
-
-      this.modalActive = !this.modalActive;
-
-      if(this.modalActive) {
-        //this.$refs.fullpage.api.setAutoScrolling(false);
-      }
-      else {
-        //this.$refs.fullpage.api.setAutoScrolling(true);
-      }
+  &:hover {
+    .arrow {
+      margin-left: -12px;
+      margin-right: 24px;
     }
   }
 }
-</script>
 
-<style lang="scss" scoped>
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //background: purple;
+  transition: 1s;
+}
 
-@import '../assets/variables';
+.stage-up {
+  opacity: 0;
+  transition: 1s;
+  transform: translate(0px, -64px);
+}
+
+.xtra-werk {
+  opacity: 1;
+  transition: 2s;
+  transition-delay: 2s;
+}
 
 .stage-in {
   opacity: 0;
@@ -460,7 +496,7 @@ export default {
 }
 
 .work-item {
-  background: white;
+  background: #555;
   height: 250px;
   transition: 1.2s;
 
@@ -508,12 +544,15 @@ export default {
 
 .works-back-button {
   //background: red;
+  //opacity: 0;
   width: 200px;
   margin: auto;
   position: absolute;
   bottom: 80px;
   left: calc(100vw);
   font-size: 22px;
+  //opacity: 0;
+  //animation: flyleft 1s ease forwards 2s;
 
   .arrow {
     transition: 300ms;
@@ -558,8 +597,17 @@ export default {
 }
 
 .modal-inactive {
-  position: absolute;
+  background: black;
   opacity: 0;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 999;
+  transition: 600ms;
+  margin: auto;
+  left: 0px;
+  top: 0px;
+  overflow: auto;
   pointer-events: none;
 }
 
@@ -591,14 +639,6 @@ export default {
   transform: translate(0px, 300px);
 }
 
-.stage-in {
-  //background: red;
-  opacity: 0.4;
-  transform: scale(0.9);
-  transition: 2s;
-  transition-delay: 0s !important;
-}
-
 .stage-left {
   transform: translate(120px, 0px);
   opacity: 0px;
@@ -613,7 +653,7 @@ export default {
 }
 
 .preview-appear  {
-  background: white !important;
+  background: white;
   opacity: 1;
 }
 
@@ -621,12 +661,11 @@ export default {
   //transform: translate(42px, 0px);
   //background: yellow !important;
   transform: translate(120px, 0px);
-  transition-delay: 200ms !important;
+  transition-delay: 250ms !important;
   opacity: 0;
 }
 
 .preview {
-  //background: red;
   border-radius: 12px;
   width: 650px;
   height: 350px;
@@ -638,7 +677,37 @@ export default {
   top: -120px;
   bottom: 0px;
   transition: 1s ease;
-  z-index: 999;
+  z-index: 777;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-loader {
+  color: black;
+  position: absolute;
+  margin: auto;
+  z-index: -1;
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #000; /* black */
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.preview-inner {
+  height: inherit;
+  width: inherit;
+  border-radius: 18px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .flip {
@@ -960,14 +1029,15 @@ h4 {
     //background: red;
     width: 150px;
     height: 150px;
-    background-image: url("../assets/SVG/cat-white.svg");
+    background-image: url("../assets/SVG/cat-static.svg");
+    filter:grayscale(1);
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
     //cursor: pointer;
 
     &:hover {
-      background-image: url("../assets/SVG/cat-static.svg");
+      filter: grayscale(0);
       background-position: center;
       background-size: contain;
       background-repeat: no-repeat;
@@ -1058,7 +1128,7 @@ a {
     }
 
     &:hover {
-      background: white;
+      /*background: white;
       border-radius: 12px;
       color: black;
       //filter:invert(1);
@@ -1066,7 +1136,9 @@ a {
       .sb-icon {
         //background-color: white;
         filter: invert(1);
-      }
+      }*/
+
+      opacity: 0.8;
     }
 
 }
@@ -1106,10 +1178,6 @@ a {
     text-align: left;
     padding: $gap;
     margin-top: 64px;
-
-    .social-button {
-        background: blue;
-    }
 }
 
 .works-enter {
@@ -1171,8 +1239,9 @@ a {
 
       &:hover {
         span {
-          background: white;
-          color: black;
+          opacity: 0.8;
+          //background: white;
+          //color: black;
           //margin-right: 24px;
         }
       }

@@ -7,7 +7,7 @@ export default {
   data() {
     return {
       options: {
-        normalScrollElements: '.test-container .modal-active .modal-inactive .more-work-grid .more-work-container',
+        normalScrollElements: '.test-container, .modal-active, .modal-inactive, .more-work-grid, .more-work-container, .modal-images',
         controlArrows: false,
         loopHorizontal: false,
         scrollingSpeed: 2000,
@@ -33,6 +33,10 @@ export default {
       hover: false,
       modalActive: false,
       currentPreview: '',
+      currentProjectText: '',
+      currentProjectTitle: '',
+      scrollOverflow: false,
+      context: 0,
       clock: {
         chicago: '',
         tokyo: '',
@@ -130,26 +134,27 @@ export default {
       console.log('enter' , index);
       this.hover = true;
       this.currentPreview = i.thumb;
+      this.currentProjectText = i.description;
+      this.currentProjectTitle = i.title;
+      this.context = index;
 
       console.log(this.currentPreview);
     },
     handleMouseLeave(i, index) {
       console.clear();
       console.log('leave', index);
+
       this.hover = false;
+
+      /*if(!this.modalActive) {}*/
     },
-    toggleWorksModal(i, index) {
+    openWorksModal(i, index) {
       console.log('CLICK', index);
 
-      this.modalActive = !this.modalActive;
+      this.modalActive = true;
       this.hover = false;
 
-      if(this.modalActive) {
-        //this.$refs.fullpage.api.setAutoScrolling(false);
-      }
-      else {
-        //this.$refs.fullpage.api.setAutoScrolling(true);
-      }
+      console.log(this.projects);
     },
     handleScroll() {
       //console.log(scrollY);
@@ -252,23 +257,32 @@ export default {
       <section class="section">
         <div class="slide work-slide">
 
+          <!-- PROJECT MODAL -->
           <div class="modal" :class="( modalActive ? 'modal-active' : 'modal-inactive' )">
-            <h1>My Modal</h1>
-            <div @click="() => { modalActive = false; }" class="modal-back hoverable"><span class="arrow">🡨</span><span>Back</span></div>
+            <div class="modal-text"><h1 class="modal-title">{{ currentProjectTitle }}</h1><p>{{ currentProjectText }}</p></div>
+
+            <div class="modal-images">
+              <ul class="image-list fp-scrollable">
+                <li class="modal-image-item hoverable" v-for="(i, index) in projects[context].images" :key="i.index">
+                  <div :id="'image' + index" class="modal-image hoverable" :style="'background-image: url(' + i + ')'"></div>
+                </li>
+              </ul>
+            </div>
+
+            <div @click="() => { modalActive = false; }" class="modal-back hoverable"><span class="arrow hoverable">🡨</span><span class="hoverable">Back</span></div>
           </div>
 
           <div class="section-inner works-inner">
-
-            <div class="preview" :class="( hover ? 'preview-appear' : 'preview-disappear' )">
+            <div class="preview" :class="( hover ? ( modalActive ? 'preview-stick' : 'preview-appear' ) : 'preview-disappear' )">
               <div class="preview-loader"></div>
-              <div class="preview-inner" :style="'background-image: url(' + currentPreview + ')'"></div>
+              <div class="preview-inner hoverable" :style="'background-image: url(' + currentPreview + ')'"></div>
             </div>
             
             <div class="works-list" :class="( activeSection == 1 && activeSlide == 1 ? 'works-enter' : 'works-leave' )">
               <ul>
                 <li 
                   v-for="(i, index) in projects"
-                  @click="toggleWorksModal(i, index)" 
+                  @click="openWorksModal(i, index)" 
                   @mouseenter="handleMouseEnter(i, index)" 
                   @mouseleave="handleMouseLeave(i, index)" 
                   class="hoverable" 
@@ -281,6 +295,7 @@ export default {
               </ul>
               <div @click="() => { $refs.fullpage.api.moveSlideRight(); }" class="more-btn hoverable"><p class="hoverable">+ More work</p></div>
             </div>
+
             <div class="clouds-container" :class="( hover ? 'blur' : 'clear' )" style="transition: 1s">
               <div class="cloud cloud5"></div>
               <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
@@ -291,6 +306,7 @@ export default {
               <div class="cloud cloud11" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
               <div class="cloud cloud12"></div>
             </div>
+            
           </div>
         </div>
         <div class="slide more-work">
@@ -356,6 +372,46 @@ export default {
 <style lang="scss" scoped>
 @import '../assets/variables';
 
+.modal-title {
+  font-size: 36px;
+}
+
+.image-list {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.modal-text {
+  //@extendanimation: flyleft 1s ease forwards 3s;
+  width:300px;
+  text-align: left;
+}
+
+.modal-images {
+  height: 550px;
+  //background: blue;
+  width: 50%;
+  margin-left: $gap * 2;
+  //animation: flyin 1s ease forwards 3s;
+  //padding-top: 200px;
+  padding-right: $gap;
+  overflow: auto;
+
+  .modal-image-item {
+    .modal-image {
+      width: 100%;
+      height: 550px;
+      border-radius: 18px;
+      margin-bottom: 24px;
+      background: orange;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  }
+}
+
 .corner-cat {
   background-image: url('../assets/SVG/cat-white.svg');
   background-size: contain;
@@ -375,11 +431,11 @@ export default {
 .modal-back {
   //background: red;
   position: absolute;
-  bottom: 36px;
-  left: 36px;
+  bottom: 48px;
+  left: 48px;
   
   span {
-    font-size: 28px !important;
+    font-size: 26px !important;
     margin-left: 24px;
   }
 
@@ -390,7 +446,7 @@ export default {
   &:hover {
     .arrow {
       margin-left: -12px;
-      margin-right: 24px;
+      margin-right: 36px;
     }
   }
 }
@@ -590,6 +646,7 @@ export default {
   position: absolute;
   z-index: 999;
   transition: 600ms;
+  transition-delay: 600ms;
   margin: auto;
   left: 0px;
   top: 0px;
@@ -660,9 +717,14 @@ export default {
 .preview-disappear {
   //transform: translate(42px, 0px);
   //background: yellow !important;
-  transform: translate(120px, 0px);
-  transition-delay: 250ms !important;
+  transform: translate(-120px, 0px);
+  transition-delay: 300ms !important;
   opacity: 0;
+}
+
+.preview-stick {
+  width: 800px;
+  height: 700px;
 }
 
 .preview {
@@ -677,7 +739,7 @@ export default {
   top: -120px;
   bottom: 0px;
   transition: 1s ease;
-  z-index: 777;
+  z-index: 9999;
   display: flex;
   justify-content: center;
   align-items: center;

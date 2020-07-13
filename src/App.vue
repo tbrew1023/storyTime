@@ -121,6 +121,29 @@ html {
   transition: filter 1s;
 }
 
+// ---------- scrollbar stuff ----------
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: white; 
+  border: 4px solid black;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: white; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #bbb; 
+}
+
 .loading-veil {
   display: none;
   background: rgba(black, 1);
@@ -354,6 +377,12 @@ p {
   }
   100% {
     opacity: 1;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .g-cursor {
+    display: none !important;
   }
 }
 </style>

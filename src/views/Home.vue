@@ -23,8 +23,8 @@ export default {
           this.handleSlideLeave(origin, destination, direction);
         }
       },
-      works: ['Yang Redesign', 'Old Orchard', 'Coinbase', 'ubloe.com'],
       projects: [],
+      extra: [],
       triggerUp: false,
       triggerDown: false,
       fix: false,
@@ -32,6 +32,8 @@ export default {
       activeSlide: 1,
       hover: false,
       modalActive: false,
+      extraModalActive: false,
+      currentExtra: '',
       currentPreview: '',
       currentProjectText: '',
       currentProjectTitle: '',
@@ -67,6 +69,7 @@ export default {
   },
   mounted() {
     this.fetchProjects();
+    this.fetchExtra();
     setInterval(() => {
       this.tock();
     }, 5000);
@@ -81,6 +84,25 @@ export default {
         });
         console.log(self.projects);
       });
+    },
+    fetchExtra() {
+      var self = this;
+
+      firebase.firestore().collection("extra").get().then((docs) => {
+        docs.forEach((doc) => {
+          self.extra.push(doc.data());
+        });
+        console.log(self.extra);
+      });
+    },
+    handleExtraClick(i) {
+      console.log('clicked extra work item');
+      this.extraModalActive = !this.extraModalActive;
+      this.currentExtra = i;
+    },
+    handleStageExtra(i) {
+      console.log('staging', i);
+      this.currentExtra = i;
     },
     handleLeave(origin, destination, direction) {
       console.clear();
@@ -297,7 +319,7 @@ export default {
             </div>
 
             <div class="clouds-container" :class="( hover ? 'blur' : 'clear' )" style="transition: 1s">
-              <div class="cloud cloud5"></div>
+              <!--div class="cloud cloud5"></div-->
               <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
               <div class="cloud cloud7" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
               <div class="cloud cloud8"></div>
@@ -309,24 +331,42 @@ export default {
             
           </div>
         </div>
+
+        <!-- EXTRA WORK -->
         <div class="slide more-work">
           <div class="more-work-container">
-            <h1 :class="( activeSlide == 0 ? 'xtra-werk' : 'stage-up' )">Extra Work</h1>
-            <div class="more-work-grid"><!-- animates first 11 items rendered -->
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
-              <div :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" class="hoverable"></div>
+
+            <div :class="( extraModalActive ? 'mvm-active' : 'mwm-inactive' )">
+              <img 
+                @click="handleExtraClick(currentExtra)" 
+                class="mwm-expanded hoverable" 
+                :src="currentExtra" 
+                alt="Extra works image" 
+              />
+            </div>
+
+            <h1 :class="( activeSlide == 0 ? ( !extraModalActive ? 'xtra-werk' : 'xtra-werk blur' ) : 'stage-up' )">Extra Work</h1>
+
+            <!-- GRID -->
+            <div :class="( extraModalActive ? 'blur' : '' )" class="more-work-grid"><!-- animates first 11 items rendered -->
+              <div 
+                v-for="(i, index) in extra[0].images" 
+                :key="i.index"
+                :id="'extra' + index" 
+                :style="'background-image: url(' + i + ')'" 
+                :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" 
+                class="extra-item hoverable"
+                @click="handleExtraClick(i)"
+                @mouseenter="handleStageExtra(i)"
+              ></div>
             </div>
           </div>
-          <div @click="() => { $refs.fullpage.api.moveSlideLeft(); }" :class="( activeSlide == 0 ? 'works-back-button hoverable' : 'stage-in' )"><span class="arrow">🡨</span> Back</div>
+
+          <div 
+            @click="() => { $refs.fullpage.api.moveSlideLeft(); }" 
+            :class="( activeSlide == 0 ? 'works-back-button hoverable' : 'stage-in' )"
+          ><span class="arrow">🡨</span><span class="hoverable">Back</span></div>
+
         </div>
       </section>
 
@@ -372,6 +412,65 @@ export default {
 <style lang="scss" scoped>
 @import '../assets/variables';
 
+.mwm-expanded {
+  background: white;
+  width: auto;
+  height: 70%;
+  border-radius: 18px;
+  min-width: 25%;
+}
+
+.mwm-inactive {
+  //background: blue;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  padding: 0px;
+  margin: 0px;
+  z-index: 999;
+  transition: 1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  
+  img {
+    transition: 600ms;
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+.mvm-active {
+  background: rgba(black, 0.8);
+  width: 100vw !important;
+  height: 100vh !important;
+  position: absolute;
+  padding: 0px;
+  margin: 0px;
+  z-index: 999;
+  transition: 1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  transition-delay: 150ms;
+
+  img {
+    transition: 600ms;
+    transform: scale(1);
+  }
+}
+
+.extra-item {
+  background-size: cover;
+  background-position: 40% 25% !important;
+  background-repeat: no-repeat;
+  background: #555;
+  border-radius: 18px;
+}
+
 .modal-title {
   font-size: 36px;
 }
@@ -389,7 +488,7 @@ export default {
 }
 
 .modal-images {
-  height: 550px;
+  height: 750px;
   //background: blue;
   width: 50%;
   margin-left: $gap * 2;
@@ -404,7 +503,7 @@ export default {
       height: 550px;
       border-radius: 18px;
       margin-bottom: 24px;
-      background: orange;
+      background: #555;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -467,8 +566,7 @@ export default {
 
 .xtra-werk {
   opacity: 1;
-  transition: 2s;
-  transition-delay: 2s;
+  transition: transform 2s 2s, opacity 2s 2s, filter 600ms 0s;
 }
 
 .stage-in {
@@ -479,6 +577,7 @@ export default {
 
 .more-work-container {
   height: 100vh;
+  width: 100%;
   display:flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -547,8 +646,9 @@ export default {
   grid-gap: 18px;
   bottom: 0px; 
   overflow: auto;
-  height: 660px;
+  height: 760px;
   padding-right: 18px;
+  transition: 600ms;
 }
 
 .work-item {
@@ -558,7 +658,7 @@ export default {
 
   &:hover {
     //transform: scale(0.95);
-    filter:hue-rotate(145deg);
+    //filter:hue-rotate(145deg);
   }
 
   &:nth-child(1) {
@@ -720,6 +820,7 @@ export default {
   transform: translate(-120px, 0px);
   transition-delay: 300ms !important;
   opacity: 0;
+  z-index: -1 !important;
 }
 
 .preview-stick {
@@ -911,7 +1012,7 @@ export default {
   }
 
     .cloud11 {
-    right: 60px;
+    right: 110px;
     top: 180px;
     background-image: url("../assets/SVG/CLOUDS/Cloud11.svg");
     //animation-delay: 12s;
@@ -919,7 +1020,7 @@ export default {
   }
 
     .cloud12 {
-    right: 140px;
+    right: 230px;
     bottom: 110px;
     background-image: url("../assets/SVG/CLOUDS/Cloud12.svg");
     //animation-delay: 14s;
@@ -1308,6 +1409,71 @@ a {
         }
       }
     }
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .main-stuff {
+    transform: scale(0.45);
+  }
+
+  .dragon-container {
+    width: 150px;
+    height: 330px;
+  }
+
+  .bottom-cloud-container {
+    transform: scale(2.5);
+    height: 160px;
+  }
+
+  .dragon-after {
+    margin-bottom: 64px;
+  }
+
+  .works-list {
+    transform: scale(0.7);
+    left: 0px;
+    text-align: left;
+    top: 200px;
+    bottom: 0px;
+  }
+
+  .more-btn {
+    float: left;
+  }
+
+  .modal {
+    display: block;
+  }
+
+  .modal-text {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    margin-top: 300px;
+  }
+
+  .modal-images {
+    width: 90%;
+    padding: 0px;
+    margin: 0px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .nav {
+    background: black;
+    z-index: 9999;
+  }
+
+  .cloud {
+    background-size: 50% !important;
+  }
+
+  .cloud2 {
+    right: 700px !important;
   }
 }
 </style>

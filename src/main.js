@@ -5,7 +5,6 @@ import store from './store'
 import firebase from 'firebase'
 import VueFullPage from 'vue-fullpage.js'
 
-
 var firebaseConfig = {
   apiKey: "AIzaSyB-zAT4xbdFZoubcCBt2mvECj9GXtkOEu4",
   authDomain: "ericzzli.firebaseapp.com",

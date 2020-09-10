@@ -1,5 +1,7 @@
 # ericzzli.com front end
 
+live site: http://ericzzli.web.app
+
 ## Project setup
 ```
 npm install

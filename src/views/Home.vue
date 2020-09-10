@@ -33,6 +33,7 @@ export default {
       hover: false,
       modalActive: false,
       extraModalActive: false,
+      bio: 'loading...',
       currentExtra: '',
       currentPreview: '',
       currentProjectText: '',
@@ -70,11 +71,23 @@ export default {
   mounted() {
     this.fetchProjects();
     this.fetchExtra();
+    this.fetchBio();
     setInterval(() => {
       this.tock();
     }, 5000);
   },
   methods: {
+    fetchBio() {
+      var self = this;
+
+      console.log("fetching bio...");
+      firebase.firestore().collection("bio").get().then((docs) => {
+        docs.forEach((doc) => {
+          self.bio = doc.data().text;
+        });
+        console.log('bio: ', self.bio);
+      });
+    },
     fetchProjects() {
       var self = this;
 
@@ -281,7 +294,7 @@ export default {
 
           <!-- PROJECT MODAL -->
           <div class="modal" :class="( modalActive ? 'modal-active' : 'modal-inactive' )">
-            <div class="modal-text"><h1 class="modal-title">{{ currentProjectTitle }}</h1><p>{{ currentProjectText }}</p></div>
+            <div class="modal-text"><h1 class="modal-title">{{ currentProjectTitle }}</h1><p class="project-text">{{ currentProjectText }}</p></div>
 
             <div class="modal-images">
               <ul class="image-list fp-scrollable">
@@ -298,6 +311,7 @@ export default {
             <div class="preview" :class="( hover ? ( modalActive ? 'preview-stick' : 'preview-appear' ) : 'preview-disappear' )">
               <div class="preview-loader"></div>
               <div class="preview-inner hoverable" :style="'background-image: url(' + currentPreview + ')'"></div>
+              <!--div v-if="(currentPreview != '' && currentPreview != 'url' )" class="preview-inner hoverable"><iframe src="https://player.vimeo.com/video/421290988" width="650" height="350" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div-->
             </div>
             
             <div class="works-list" :class="( activeSection == 1 && activeSlide == 1 ? 'works-enter' : 'works-leave' )">
@@ -384,14 +398,7 @@ export default {
           <div class="contact-main" :class="( activeSection == 2 ? '' : 'stage-down' )">
             <div class="about-me">
                 <h1>About me.</h1>
-                <p>
-                    What is there to say about me? Well, I'm a young guy trying to make his mark in this big world. I enjoy designing anything but I'm best at digital design and branding. 
-                    I hope to one day take these skills to start my own business. In the mean time I enjoy producing beats and gardening.
-                    <br><br>
-                    I grew up in the Chicagoland area and went to DePaul University. I'm a quick learner, open minded, and like coming up with creative solutions.
-                    <br><br>
-                    Anyways, lets link up and get that bread. 
-                </p>
+                <p>{{ bio }}</p>
             </div>
             <div class="contact-buttons">
                 <a href="https://www.instagram.com/e.z.li/"><div class="sb hoverable"><div class="sb-icon ig hoverable"></div><span class="hoverable">e.z.li</span></div></a>
@@ -411,6 +418,10 @@ export default {
 
 <style lang="scss" scoped>
 @import '../assets/variables';
+
+.project-text {
+  font-size: 14px !important;
+}
 
 .mwm-expanded {
   background: white;
@@ -829,7 +840,7 @@ export default {
 }
 
 .preview {
-  border-radius: 12px;
+  border-radius: 18px;
   width: 650px;
   height: 350px;
   //margin-right: 220px;
@@ -1360,9 +1371,21 @@ a {
     //background: blue;
     transition-delay: 1.6s !important;
   }
+  li:nth-child(5) {
+    //background: blue;
+    transition-delay: 1.8s !important;
+  }
+  li:nth-child(6) {
+    //background: blue;
+    transition-delay: 2.0s !important;
+  }
+  li:nth-child(7) {
+    //background: blue;
+    transition-delay: 2.2s !important;
+  }
   .more-btn {
     //background: blue;
-    transition-delay: 1.8s;
+    transition-delay: 2.4s;
   }
 }
 

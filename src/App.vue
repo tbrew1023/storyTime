@@ -1,27 +1,7 @@
 <template>
   <div id="app">
-    <div class="loading-veil">
-      <div class="loading-veil-inner">
-        <div class="load-cat"></div>
-        <div class="load-text">
-            <div class="load-wrapp">
-              <div class="load-6">
-                <div class="letter-holder" style="display:flex; justify-content: center">
-                  <div class="l-1 letter"><p>L</p></div>
-                  <div class="l-2 letter"><p>o</p></div>
-                  <div class="l-3 letter"><p>a</p></div>
-                  <div class="l-4 letter"><p>d</p></div>
-                  <div class="l-5 letter"><p>i</p></div>
-                  <div class="l-6 letter"><p>n</p></div>
-                  <div class="l-7 letter"><p>g</p></div>
-                  <div class="l-8 letter"><p>.</p></div>
-                  <div class="l-9 letter"><p>.</p></div>
-                  <div class="l-10 letter"><p>.</p></div>
-                </div>
-              </div>
-            </div>
-        </div>
-      </div>
+    <div :class="(unveil ? 'swoop' : '' )" class="logo-loader"></div>
+    <div :class="(unveil ? 'loading-veil unveil' : 'loading-veil')">
     </div>
     <div class="cc" :class="[ 'g-cursor', { 'g-cursor_hover': hover }, {'g-cursor_hide': hideCursor} ]">
       <div :style="cursorCircle" class="g-cursor__circle"></div>
@@ -32,8 +12,6 @@
 </template>
 
 <script>
-import firebase from 'firebase'
-//import CustomCursor from '@/components/CustomCursor'
 
 export default {
   name: 'App',
@@ -48,7 +26,8 @@ export default {
       xParent: 0,
       yParent: 0,
       hover: false,
-      hideCursor: true
+      hideCursor: false,
+      unveil: null
     }
   },
   computed: {
@@ -60,7 +39,11 @@ export default {
     }
   },
   mounted() {
-    this.fetchData();
+    setTimeout(() => {
+      this.unveil = true;
+      this.waveOffset = 700;
+      console.log('unveiled');
+    }, 3000);
     document.addEventListener("mousemove", this.moveCursor);
     document.addEventListener('mouseleave', (e) => {
       this.hideCursor = true;
@@ -72,19 +55,6 @@ export default {
     });
   },
   methods: {
-    fetchData() {
-      var self = this;
-
-      var fireRef = firebase.firestore().collection('test-collection');
-
-      fireRef.get().then((docs) => {
-        docs.forEach((doc) => {
-          //console.log(doc.data());
-          self.dataRef = doc.data();
-        });
-      });
-
-    },
     handleNav(index) {
       console.clear();
       console.log(index);
@@ -96,11 +66,11 @@ export default {
 
       //console.log(e.target.classList);
 
-      if(e.target.classList.contains('hoverable')) {
+      if(e.target.classList.contains('hoverable') || e.target.classList.contains('fp-tooltip') || e.target.tagName == "SPAN") {
+        console.log(e.target.tagName);
         //console.log('HOVERABLE:)');
         self.hover = true;
-      }
-      else {
+      } else {
         //console.log('NOT HOVERABLE!');
         self.hover = false;
       }
@@ -119,6 +89,68 @@ export default {
 <style lang="scss">
 html {
   transition: filter 1s;
+}
+
+.swoop {
+  transform: translate(-22px, -22px) scale(0.4) !important;
+  //background: green !important;
+  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.logo-loader {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transform: translate(calc(50vw - 100px), calc(50vh - 100px));
+  margin: auto;
+  z-index: 999999;
+  width: 200px;
+  height: 200px;
+  //background: pink;  
+  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
+  background-image: url('assets/podular-white-emblem.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#fp-nav {
+  margin-left: 36px !important;
+  position: absolute;
+  top: 400px;
+
+  li {
+    margin-bottom: 36px !important;
+  }
+
+  .fp-tooltip {
+    font-size: 18px !important;
+    padding-left: 32px;
+    line-height: 38px;
+  }
+
+  .active span {
+    opacity: 1 !important;
+    transform: translate(4px,4px);
+
+    &:hover {
+      //transform: translate(-1px,-1px) !important;
+      //transform: scale(1.5);
+    }
+  }
+
+  span {
+    background: white !important;
+    opacity: 0.4;
+    height: 24px !important;
+    width: 24px !important;
+    //transform: translate(-1px,-1px);
+
+    &:hover {
+      //transform: translate(-1px,-1px);
+      transform: scale(1.05);
+    }
+  }
 }
 
 // ---------- scrollbar stuff ----------
@@ -144,9 +176,17 @@ html {
   background: #bbb; 
 }
 
+
+.unveil {
+  opacity: 0 !important;
+  transition: 4s;
+  pointer-events: none;
+}
+
 .loading-veil {
-  display: none;
-  background: rgba(black, 1);
+  //display: none;
+  background: #181818;
+  opacity: 1;
   width: 100%;
   height: 100vh;
   position: fixed;
@@ -154,6 +194,10 @@ html {
   padding: 0px;
   pointer-events: none;
   z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 2s;
 
   .load-cat {
     background-image: url('assets/4x/cat-mono-fill.png');
@@ -212,7 +256,7 @@ html {
 body {
   padding: 0px;
   margin: 0px;
-  cursor: none;
+  //cursor: none;
 }
 
 @font-face {
@@ -234,16 +278,9 @@ p {
   background: black; 
 }
 
-.main-title {
-  padding: 0px;
-  margin: 36px;
-  font-size: 64px;
-}
-
 // --------- cursor stuff ----------
 
 .g-cursor {
-
     &_hide {
       opacity: 0;
       width: 60px;
@@ -262,7 +299,8 @@ p {
       position: fixed;
       width: 36px;
       height: 36px;
-      border: 4px solid rgba(white, 0.8);
+      border: 4px solid rgba(white, 1);
+      mix-blend-mode: difference;
       //background: rgba(white,0.3);
       border-radius: 100%;
       z-index: 5555;
@@ -277,6 +315,7 @@ p {
     &__point {
       top: 0;
       left: 0;
+      opacity: 0;
       position: fixed;
       width: 10px;
       height: 10px;
@@ -296,11 +335,11 @@ p {
 
     &_hover {
       .g-cursor__point {
-          //opacity: 0.7;
-          width: 48px;
-          height: 48px;
-          margin-left: -18px;
-          margin-top: -18px;
+          opacity: 1;
+          width: 60px;
+          height: 60px;
+          margin-left: -24px;
+          margin-top: -24px;
           background: white;
           mix-blend-mode: difference;
           //background: rgba(white, 1);

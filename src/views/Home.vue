@@ -1,17 +1,63 @@
-<script>
-import firebase from 'firebase'
-import moment from 'moment-timezone';
+<template>
+  <div class="home">
 
+    <div :style="'left:' + waveOffset" :class="(waveLeft ? 'wave-left' : 'wave-right' )" class="wave-panel">
+        <div class="wave"></div>
+    </div>
+
+    <div id="nav" class="hoverable">
+      <div class="link-list hoverable">
+
+      </div>
+    </div>
+
+    <full-page ref="fullpage" :options="options" id="fullpage">
+      <!-- About Podular -->
+      <section style="background: blue" class="section">
+
+      </section>
+
+      <!-- Modular Pods -->
+      <section style="background: green" class="section">
+
+      </section>
+
+      <!-- Customization -->
+      <section style="background: orange" class="section">
+
+      </section>
+
+      <!-- Showroom -->
+      <section style="background: brown" class="section">
+
+      </section>
+
+      <!-- Contact -->
+      <section style="background: purple" class="section">
+
+      </section>
+
+    </full-page>
+  </div>
+</template>
+
+<script>
 export default {
   name: 'Home',
   data() {
     return {
+      waveOffset: "150vw",
+      waveLeft: true,
       options: {
         normalScrollElements: '.test-container, .modal-active, .modal-inactive, .more-work-grid, .more-work-container, .modal-images',
         controlArrows: false,
         loopHorizontal: false,
-        scrollingSpeed: 2000,
+        scrollingSpeed: 1000,
+        navigation: true,
         fadingEffect: true,
+        navigationPosition: 'left',
+        navigationTooltips: ['About Podular', 'Modular Pods', 'Customization','Showroom','Contact'],
+        showActiveTooltip: true,
         //easingcss3: 'cubic-bezier(0.87, 0, 0.13, 1)', //exponential
         //easingcss3: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)', //bouncey
         easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)', //swoopy
@@ -23,8 +69,6 @@ export default {
           this.handleSlideLeave(origin, destination, direction);
         }
       },
-      projects: [],
-      extra: [],
       triggerUp: false,
       triggerDown: false,
       fix: false,
@@ -40,13 +84,6 @@ export default {
       currentProjectTitle: '',
       scrollOverflow: false,
       context: 0,
-      clock: {
-        chicago: '',
-        tokyo: '',
-        newYork: '',
-        sydney: '',
-        london: ''
-      },
     }
   },
   props: {
@@ -56,58 +93,15 @@ export default {
 
   },
   created() {
-    var chicago = moment.tz('America/Chicago').format();
-    var tokyo = moment.tz('Asia/Tokyo').format();
-    var newYork = moment.tz('America/New_York').format();
-    var sydney = moment.tz('Australia/Sydney').format();
-    var london = moment.tz('Europe/London').format();
-
-    this.clock.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
-    this.clock.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
-    this.clock.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
-    this.clock.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
-    this.clock.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
+    setTimeout(() => {
+      this.waveOffset = "30vw";
+      this.waveLeft = false;
+    }, 3000);
   },
   mounted() {
-    this.fetchProjects();
-    this.fetchExtra();
-    this.fetchBio();
-    setInterval(() => {
-      this.tock();
-    }, 5000);
+
   },
   methods: {
-    fetchBio() {
-      var self = this;
-
-      console.log("fetching bio...");
-      firebase.firestore().collection("bio").get().then((docs) => {
-        docs.forEach((doc) => {
-          self.bio = doc.data().text;
-        });
-        console.log('bio: ', self.bio);
-      });
-    },
-    fetchProjects() {
-      var self = this;
-
-      firebase.firestore().collection("projects").get().then((docs) => {
-        docs.forEach((doc) => {
-          self.projects.push(doc.data());
-        });
-        console.log(self.projects);
-      });
-    },
-    fetchExtra() {
-      var self = this;
-
-      firebase.firestore().collection("extra").get().then((docs) => {
-        docs.forEach((doc) => {
-          self.extra.push(doc.data());
-        });
-        console.log(self.extra);
-      });
-    },
     handleExtraClick(i) {
       console.log('clicked extra work item');
       this.extraModalActive = !this.extraModalActive;
@@ -130,10 +124,14 @@ export default {
       if(destination.index == 0) {
         console.log('lock');
         this.fix = false;
+        this.waveOffset = "30vw";
+        this.waveLeft = false;
       }
       else {
         this.fix = true;
         console.log('unlock');
+        this.waveOffset = "80vw";
+        this.waveLeft = true;
       }
 
       if(direction == 'up') {
@@ -195,229 +193,64 @@ export default {
       //console.log(scrollY);
       //this.bannerOffset = scrollY;
     },
-    tock() {
-      var chicago = moment.tz('America/Chicago').format();
-      var tokyo = moment.tz('Asia/Tokyo').format();
-      var newYork = moment.tz('America/New_York').format();
-      var sydney = moment.tz('Australia/Sydney').format();
-      var london = moment.tz('Europe/London').format();
-
-      this.clock.chicago = chicago.substring(chicago.indexOf('T') + 1, chicago.indexOf('T') + 6);
-      this.clock.tokyo = tokyo.substring(tokyo.indexOf('T') + 1, tokyo.indexOf('T') + 6);
-      this.clock.newYork = newYork.substring(newYork.indexOf('T') + 1, newYork.indexOf('T') + 6);
-      this.clock.sydney = sydney.substring(sydney.indexOf('T') + 1, sydney.indexOf('T') + 6);
-      this.clock.london = london.substring(london.indexOf('T') + 1, london.indexOf('T') + 6);
-    }
   }
 }
 </script>
 
-<template>
-  <div class="home">
-
-    <div id="nav" class="hoverable">
-      <h1 class="main-title">eric li</h1>
-      <div class="link-list hoverable">
-        <ul>
-          <li @click="() => { $refs.fullpage.api.moveSlideLeft(); $refs.fullpage.api.moveTo(1); }" class="hoverable"><span>></span>Home</li>
-          <li @click="() => { $refs.fullpage.api.moveSlideLeft(); $refs.fullpage.api.moveTo(2); }" class="hoverable"><span>></span>Work</li>
-          <li @click="() => { $refs.fullpage.api.moveSlideLeft(); $refs.fullpage.api.moveTo(3); }" class="hoverable"><span>></span>Contact</li>
-        </ul>
-      </div>
-    </div>
-
-    <div :class="( activeSection != 0 ? '' : 'stage-up' )" class="corner-cat"></div>
-
-    <full-page ref="fullpage" :options="options" id="fullpage">
-      <!-- CONTACT PAGE -->
-      <section class="section">
-        <div class="section-inner">
-          <div class="clouds-container">
-            <div class="cloud cloud1"></div>
-            <div class="cloud cloud2" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
-            <div class="cloud cloud3" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
-            <div class="cloud cloud4" :class="( fix ? 'invisible parallax3' : 'visible' )"></div>
-          </div>
-          <div class="main-stuff">
-            <div class="home-section clocks-container">
-              <h2>
-                <div class="clock-inner">
-                  <h3>chicago</h3>
-                  <h4>{{ clock.chicago }}</h4>
-                </div>
-              </h2>
-              <h2>
-                <div class="clock-inner">
-                  <h3>tokyo</h3>
-                  <h4>{{ clock.tokyo }}</h4>
-                </div>
-              </h2>
-              <h2>
-                <div class="clock-inner">
-                  <h3>new york</h3>
-                  <h4>{{ clock.newYork }}</h4>
-                </div>
-              </h2>
-              <h2>
-                <div class="clock-inner">
-                  <h3>sydney</h3>
-                  <h4>{{ clock.sydney }}</h4>
-                </div>
-              </h2>
-              <h2>
-                <div class="clock-inner">
-                  <h3>london</h3>
-                  <h4>{{ clock.london }}</h4>
-                </div>
-              </h2>
-            </div>
-            <div class="home-section roles-container">
-              <h2>DESIGNER</h2>
-              <h2>WORKER</h2>
-              <h2>PRODUCER</h2>
-            </div>
-            <div :class="( fix ? 'implode' : '' )" class="cat-container cat-container-centered home-section">
-              <div @click="$refs.fullpage.api.moveSectionDown()" class="cat hoverable"></div>
-              <p>Scroll down for work</p>
-            </div>
-          </div>
-          <div :class="( fix ? 'invisible dragon-after' : 'visible' )" class="dragon-container hoverable">
-            <p class="dragon-text">Or we could just chill....</p>
-          </div>
-          <div :class="( fix ? 'invisible parallax1' : 'visible' )" class="bottom-cloud-container"></div>
-        </div>  
-      </section>
-
-      <!-- MAIN WORKS PAGE -->
-      <section class="section">
-        <div class="slide work-slide">
-
-          <!-- PROJECT MODAL -->
-          <div class="modal" :class="( modalActive ? 'modal-active' : 'modal-inactive' )">
-            <div class="modal-text"><h1 class="modal-title">{{ currentProjectTitle }}</h1><p class="project-text">{{ currentProjectText }}</p></div>
-
-            <div class="modal-images">
-              <ul class="image-list fp-scrollable">
-                <li class="modal-image-item hoverable" v-for="(i, index) in projects[context].images" :key="i.index">
-                  <div :id="'image' + index" class="modal-image hoverable" :style="'background-image: url(' + i + ')'"></div>
-                </li>
-              </ul>
-            </div>
-
-            <div @click="() => { modalActive = false; }" class="modal-back hoverable"><span class="arrow hoverable">🡨</span><span class="hoverable">Back</span></div>
-          </div>
-
-          <div class="section-inner works-inner">
-            <div class="preview" :class="( hover ? ( modalActive ? 'preview-stick' : 'preview-appear' ) : 'preview-disappear' )">
-              <div class="preview-loader"></div>
-              <div class="preview-inner hoverable" :style="'background-image: url(' + currentPreview + ')'"></div>
-              <!--div v-if="(currentPreview != '' && currentPreview != 'url' )" class="preview-inner hoverable"><iframe src="https://player.vimeo.com/video/421290988" width="650" height="350" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div-->
-            </div>
-            
-            <div class="works-list" :class="( activeSection == 1 && activeSlide == 1 ? 'works-enter' : 'works-leave' )">
-              <ul>
-                <li 
-                  v-for="(i, index) in projects"
-                  @click="openWorksModal(i, index)" 
-                  @mouseenter="handleMouseEnter(i, index)" 
-                  @mouseleave="handleMouseLeave(i, index)" 
-                  class="hoverable" 
-                  :key="i.index"
-                >
-                  <span class="hoverable">
-                    {{ i.title }}
-                  </span>
-                </li>
-              </ul>
-              <div @click="() => { $refs.fullpage.api.moveSlideRight(); }" class="more-btn hoverable"><p class="hoverable">+ More work</p></div>
-            </div>
-
-            <div class="clouds-container" :class="( hover ? 'blur' : 'clear' )" style="transition: 1s">
-              <!--div class="cloud cloud5"></div-->
-              <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
-              <div class="cloud cloud7" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
-              <div class="cloud cloud8"></div>
-              <div class="cloud cloud9" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
-              <div class="cloud cloud10" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
-              <div class="cloud cloud11" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
-              <div class="cloud cloud12"></div>
-            </div>
-            
-          </div>
-        </div>
-
-        <!-- EXTRA WORK -->
-        <div class="slide more-work">
-          <div class="more-work-container">
-
-            <div :class="( extraModalActive ? 'mvm-active' : 'mwm-inactive' )">
-              <img 
-                @click="handleExtraClick(currentExtra)" 
-                class="mwm-expanded hoverable" 
-                :src="currentExtra" 
-                alt="Extra works image" 
-              />
-            </div>
-
-            <h1 :class="( activeSlide == 0 ? ( !extraModalActive ? 'xtra-werk' : 'xtra-werk blur' ) : 'stage-up' )">Extra Work</h1>
-
-            <!-- GRID -->
-            <div :class="( extraModalActive ? 'blur' : '' )" class="more-work-grid"><!-- animates first 11 items rendered -->
-              <div 
-                v-for="(i, index) in extra[0].images" 
-                :key="i.index"
-                :id="'extra' + index" 
-                :style="'background-image: url(' + i + ')'" 
-                :class="( activeSlide == 0 ? 'work-item' : 'stage-in' )" 
-                class="extra-item hoverable"
-                @click="handleExtraClick(i)"
-                @mouseenter="handleStageExtra(i)"
-              ></div>
-            </div>
-          </div>
-
-          <div 
-            @click="() => { $refs.fullpage.api.moveSlideLeft(); }" 
-            :class="( activeSlide == 0 ? 'works-back-button hoverable' : 'stage-in' )"
-          ><span class="arrow">🡨</span><span class="hoverable">Back</span></div>
-
-        </div>
-      </section>
-
-      <!-- CONTACT PAGE -->
-      <section class="section">
-        <div class="contact-container">
-          <div class="clouds-container">
-            <div class="cloud cloud5"></div>
-            <div class="cloud cloud6" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
-            <div class="cloud cloud8"></div>
-            <div class="cloud cloud10" :class="( fix ? 'invisible patallax1' : 'visible' )"></div>
-            <div class="cloud cloud11" :class="( fix ? 'invisible parallax2' : 'visible' )"></div>
-            <div class="cloud cloud12"></div>
-          </div>
-          <div class="contact-main" :class="( activeSection == 2 ? '' : 'stage-down' )">
-            <div class="about-me">
-                <h1>About me.</h1>
-                <p>{{ bio }}</p>
-            </div>
-            <div class="contact-buttons">
-                <a href="https://www.instagram.com/e.z.li/"><div class="sb hoverable"><div class="sb-icon ig hoverable"></div><span class="hoverable">e.z.li</span></div></a>
-                <a href="https://www.behance.net/ericzzli/moodboards"><div class="sb hoverable"><div class="sb-icon bh hoverable"></div><span class="hoverable">ericzzli</span></div></a>
-                <a href="https://www.linkedin.com/in/ericzzli/"><div class="sb hoverable"><div class="sb-icon li hoverable"></div><span class="hoverable">ericzzli</span></div></a>
-                <div class="contact-other">
-                    <a href="mailto:ezl@protonmail.com"><div class="sb hoverable"><div class="sb-icon email hoverable"></div><span class="hoverable">eric@ericzzli.com</span></div></a>
-                    <div class="sb sb-cv"><div class="sb-icon cv hoverable"></div><span>CV on request</span></div>
-                </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </full-page>
-  </div>
-</template>
-
 <style lang="scss" scoped>
 @import '../assets/variables';
+
+.wave-panel {
+  background: white;
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+  margin: 0px;
+  z-index: 9;
+  transition: 2s;
+  pointer-events: none;
+
+  .wave {
+    height: 100vh;
+    transform: translateX(0px) scale(4);
+    width: 175px;
+    position: absolute;
+    background-image: url('../assets/wave.svg');
+    background-size: contain;
+    background-position-y: 50%;
+    background-repeat: repeat-y;
+    transition: 2s;
+  }
+}
+
+.wave-left {
+  .wave {
+    background-position-y: 7% !important;
+    //background: rgba(yellow, 0.2);
+  }
+}
+
+.wave-right {
+  .wave {
+    background-position-y: 50% !important;
+    //background: rgba(aqua, 0.2);
+  }
+}
+
+.main-title {
+  //background:red;
+  width: 70px;
+  background-image: url("../assets/podular-white-emblem.png");
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 70px;
+  margin: 42px;
+}
+
+.hoverable {
+  cursor: pointer;
+}
 
 .project-text {
   font-size: 14px !important;
@@ -638,7 +471,7 @@ export default {
     color: white;
     text-decoration: none;
     opacity: 0.7;
-    cursor: none;
+    //cursor: none;
 
     &.router-link-exact-active {
       color: white;
@@ -1294,7 +1127,7 @@ a {
     //padding-left: 36px;1
     margin-bottom: 12px;
     transition: 300ms;
-    cursor: none !important;
+    //cursor: none !important;
 
     span {
         font-size: 22px;

@@ -41,7 +41,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.unveil = true;
-      this.waveOffset = 700;
+      //this.waveOffset = 700;
       console.log('unveiled');
     }, 3000);
     document.addEventListener("mousemove", this.moveCursor);
@@ -107,7 +107,7 @@ html {
   width: 200px;
   height: 200px;
   //background: pink;  
-  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: 3s cubic-bezier(0.65, 0, 0.35, 1);
   background-image: url('assets/podular-white-emblem.png');
   background-position: center;
   background-size: contain;
@@ -117,7 +117,7 @@ html {
 #fp-nav {
   margin-left: 36px !important;
   position: absolute;
-  top: 400px;
+  top: 445px;
 
   li {
     margin-bottom: 36px !important;

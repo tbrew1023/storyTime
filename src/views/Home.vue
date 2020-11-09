@@ -1,67 +1,25 @@
-<template>
-  <div class="home">
-
-    <div :style="'left:' + waveOffset" :class="(waveLeft ? 'wave-left' : 'wave-right' )" class="wave-panel">
-        <div class="wave"></div>
-    </div>
-
-    <div id="nav" class="hoverable">
-      <div class="link-list hoverable">
-
-      </div>
-    </div>
-
-    <full-page ref="fullpage" :options="options" id="fullpage">
-      <!-- About Podular -->
-      <section style="background: blue" class="section">
-
-      </section>
-
-      <!-- Modular Pods -->
-      <section style="background: green" class="section">
-
-      </section>
-
-      <!-- Customization -->
-      <section style="background: orange" class="section">
-
-      </section>
-
-      <!-- Showroom -->
-      <section style="background: brown" class="section">
-
-      </section>
-
-      <!-- Contact -->
-      <section style="background: purple" class="section">
-
-      </section>
-
-    </full-page>
-  </div>
-</template>
-
 <script>
 export default {
   name: 'Home',
   data() {
     return {
-      waveOffset: "150vw",
+      waveOffset: "120vw",
       waveLeft: true,
       options: {
         normalScrollElements: '.test-container, .modal-active, .modal-inactive, .more-work-grid, .more-work-container, .modal-images',
-        controlArrows: false,
+        controlArrows: true,
         loopHorizontal: false,
         scrollingSpeed: 1000,
+        slidesNavigation: true,
         navigation: true,
         fadingEffect: true,
         navigationPosition: 'left',
-        navigationTooltips: ['About Podular', 'Modular Pods', 'Customization','Showroom','Contact'],
+        navigationTooltips: ['Home','About Podular', 'Modular Pods', 'Customization','Showroom','Contact'],
         showActiveTooltip: true,
         //easingcss3: 'cubic-bezier(0.87, 0, 0.13, 1)', //exponential
         //easingcss3: 'cubic-bezier(0.68, -0.6, 0.32, 1.6)', //bouncey
         easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)', //swoopy
-        anchors: ['home','work', 'contact'],
+        anchors: ['home','about-podular', 'modular-pods', 'customization','showroom','contact'],
         onLeave: (origin, destination, direction) => {
           this.handleLeave(origin, destination, direction);
         },
@@ -94,7 +52,7 @@ export default {
   },
   created() {
     setTimeout(() => {
-      this.waveOffset = "30vw";
+      //this.waveOffset = "30vw";
       this.waveLeft = false;
     }, 3000);
   },
@@ -123,14 +81,20 @@ export default {
 
       if(destination.index == 0) {
         console.log('lock');
-        this.fix = false;
+        this.waveOffset = "120vw";
+        this.waveLeft = true;
+      } else if(destination.index == 1) {
+        this.waveOffset = "30vw";
+        this.waveLeft = false;
+      } else if(destination.index == 3) {
+        this.waveOffset = "30vw";
+        this.waveLeft = false;
+      } else if(destination.index == 4) {
         this.waveOffset = "30vw";
         this.waveLeft = false;
       }
       else {
-        this.fix = true;
-        console.log('unlock');
-        this.waveOffset = "80vw";
+        this.waveOffset = "50vw";
         this.waveLeft = true;
       }
 
@@ -197,11 +161,147 @@ export default {
 }
 </script>
 
+<template>
+  <div class="home">
+
+    <div class="soc-container">
+      <a href="https://www.facebook.com/Caf%C3%A9Bellas-LLC-1664700527089434/" target="_blank"><div class="hoverable soc-button fb"></div></a>
+      <a href="https://www.instagram.com/cafebellas/" target="_blank"><div class="hoverable soc-button insta"></div></a>
+      <a href="https://twitter.com/cafebellas" target="_blank"><div class="hoverable soc-button tw"></div></a>
+      <a href="https://www.linkedin.com/company/cafebellas-of-illinois/" target="_blank"><div class="hoverable soc-button li"></div></a>
+    </div>
+
+    <div :style="'left:' + waveOffset" :class="(waveLeft ? 'wave-left' : 'wave-right' )" class="wave-panel">
+        <div class="wave"></div>
+    </div>
+
+    <div id="nav" class="hoverable">
+      <div class="link-list hoverable">
+
+      </div>
+    </div>
+
+    <full-page ref="fullpage" :options="options" id="fullpage">
+      <section style="background: blue" class="section landing">
+        <div class="landing-container">
+        </div>
+      </section>
+      
+      <!-- About Podular -->
+      <section style="background: blue" class="section">
+
+      </section>
+
+      <!-- Modular Pods -->
+      <section style="background: green" class="section">
+
+      </section>
+
+      <!-- Customization -->
+      <section style="background: orange" class="section">
+
+      </section>
+
+      <!-- Showroom -->
+      <section style="background: brown" class="section">
+        <div class="slide">slide 1</div>
+        <div class="slide">slide 2</div>
+        <div class="slide">slide 3</div>
+        <div class="slide">slide 4</div>
+      </section>
+
+      <!-- Contact -->
+      <section style="background: purple" class="section">
+
+      </section>
+
+    </full-page>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 @import '../assets/variables';
 
+.soc-container {
+  position: fixed;
+  bottom: 48px;
+  left: 48px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  //background: red;
+}
+
+.insta {
+  background-image: url("../assets/i.png");
+  background-size: 135% !important;
+  filter: invert(1);
+}
+
+.fb {
+  background-image: url("../assets/f.png");
+  filter: invert(1);
+  background-size: 130% !important;
+}
+
+.li {
+  background-image: url("../assets/li.png");
+  filter: invert(1);
+  background-size: 105% !important;
+  transform: scale(1.2);
+}
+
+.tw {
+  background-image: url("../assets/t.png");
+  filter: invert(1);
+}
+
+.soc-button {
+  width: 24px;
+  height: 24px;
+  //background: white;
+  //padding: 12px;
+  margin-left: 18px;
+  //border-radius: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.landing-container {
+  background-image: url('../assets/podular-text-white.svg');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 300px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  padding: 0px;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  top: 0px;
+
+  h1 {
+    font-size: 48px;
+  }
+}
+
+.landing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .wave-panel {
-  background: white;
+  background: #181818;
   position: fixed;
   height: 100vh;
   width: 100%;
@@ -353,22 +453,6 @@ export default {
       background-repeat: no-repeat;
     }
   }
-}
-
-.corner-cat {
-  background-image: url('../assets/SVG/cat-white.svg');
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  transition: 2s;
-  transition-delay: 1s;
-  width: 80px;
-  height: 80px;
-  position: fixed;
-  margin: 36px;
-  right: 0px;
-  top: 0px;
-  z-index: 888;
 }
 
 .modal-back {
@@ -570,19 +654,6 @@ export default {
   }
 }
 
-.work-slide {
-  width: 100%;
-  height: 100vh;
-}
-
-.test-container {
-  overflow: scroll;
-  background: orange;
-  height: 300px;
-  width: 600px;
-  z-index: 9999;
-}
-
 .modal-active {
   background: black;
   width: 100vw;
@@ -653,505 +724,10 @@ export default {
   filter: blur(0px);
 }
 
-.preview-appear  {
-  background: white;
-  opacity: 1;
-}
-
-.preview-disappear {
-  //transform: translate(42px, 0px);
-  //background: yellow !important;
-  transform: translate(-120px, 0px);
-  transition-delay: 300ms !important;
-  opacity: 0;
-  z-index: -1 !important;
-}
-
-.preview-stick {
-  width: 800px;
-  height: 700px;
-}
-
-.preview {
-  border-radius: 18px;
-  width: 650px;
-  height: 350px;
-  //margin-right: 220px;
-  position: absolute;
-  margin: auto;
-  left: 420px;
-  //right: 0px;
-  top: -120px;
-  bottom: 0px;
-  transition: 1s ease;
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.preview-loader {
-  color: black;
-  position: absolute;
-  margin: auto;
-  z-index: -1;
-  border: 4px solid #f3f3f3; /* Light grey */
-  border-top: 4px solid #000; /* black */
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: spin 2s linear infinite;
-}
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-.preview-inner {
-  height: inherit;
-  width: inherit;
-  border-radius: 18px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.flip {
-  //transform: rotateX(90deg);
-}
-
-.implode {
-  transform: scale(0.9);
-  opacity: 0.4;
-  position: absolute;
-}
-
-.shrunk {
-  transform: translateY(-200px) !important;
-  transition: 1s;
-}
-
-.parallax1 {
-  transform: scale(1.15) translateY(-200px);
-}
-
-.parallax2 {
-  transform: scale(0.8) translateY(-400px);
-  opacity: 0.5;
-}
-
-.parallax3 {
-  transform: scale(0.6) translateY(-300px);
-  opacity: 0.8;
-}
-
-.invisible {
-  //opacity: 0;
-  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.visible {
-  opacity: 1;
-  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.clouds-container {
-  width: 100%;
-  height: 100vh;
-  position: absolute;
-  z-index: -1;
-
-  .cloud {
-    //background: blue;
-    //transform: translateZ(3px);
-    opacity: 1 !important;
-    width: 100px;
-    height: 80px;
-    position: absolute;
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    animation: sway 12s ease-in-out infinite;
-    //z-index: -1;
-  }
-
-  .cloud1 {
-    left: -25px;
-    bottom: 400px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud1.svg");
-    //animation-delay: 2s;
-    animation-duration: 10s;
-  }
-
-  .cloud2 {
-    left: 300px;
-    bottom: 220px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud2.svg");
-    //animation-delay: 6s;
-    animation-duration: 11s;
-  }
-
-  .cloud3 {
-    right: 340px;
-    top: 100px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud3.svg");
-    //animation-delay: 1s;
-  }
-
-  .cloud4 {
-    right: -40px;
-    bottom: 180px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud4.svg");
-    //animation-delay: 12s;
-    animation-duration: 9s;
-  }
-
-  .cloud5 {
-    right: -40px;
-    bottom: 180px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud5.svg");
-    //animation-delay: 12s;
-    animation-duration: 9s;
-  }
-
-  .cloud6 {
-    left: 40px;
-    bottom: 480px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud6.svg");
-    //animation-delay: 19s;
-    animation-duration: 10s;
-  }
-
-    .cloud7 {
-    left: 340px;
-    bottom: 280px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud7.svg");
-    //animation-delay: 12s;
-    animation-duration: 17s;
-  }
-
-    .cloud8 {
-    left: 800px;
-    bottom: 100px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud8.svg");
-    //animation-delay: 11s;
-    animation-duration: 11s;
-  }
-
-    .cloud9 {
-    left: 520px;
-    bottom: 600px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud9.svg");
-    //animation-delay: 12s;
-    animation-duration: 13.5s;
-  }
-
-    .cloud10 {
-    left: 900px;
-    top: 60px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud10.svg");
-    //animation-delay: 10s;
-    animation-duration: 10.5s;
-  }
-
-    .cloud11 {
-    right: 110px;
-    top: 180px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud11.svg");
-    //animation-delay: 12s;
-    animation-duration: 13s;
-  }
-
-    .cloud12 {
-    right: 230px;
-    bottom: 110px;
-    background-image: url("../assets/SVG/CLOUDS/Cloud12.svg");
-    //animation-delay: 14s;
-    animation-duration: 14s;
-  }
-}
-
-.section {
-  text-align: center;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100%;
-}
-
-h3 {
-  margin-bottom: 6px;
-  margin-top: 0px;
-}
-
-h4 {
-  font-family: 12px !important;
-  //opacity: 0.5;
-  margin: 0px;
-  font-size: 16px;
-}
-
-.dragon-container {
-  width: 400px;
-  height: 800px;
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  background-image: url('../assets/SVG/dragon.svg');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  animation: float 16s ease-in-out infinite;
-  transition: transform 2s, margin opacity 2s;
-  //background: red;
-
-  &:hover {
-    .dragon-text {
-      opacity: 1;
-    }
-  }
-
-  .dragon-text {
-    position: absolute;
-    top: 220px;
-    margin-left: 200px;
-    right: 380px;
-    width: max-content;
-    opacity: 0;
-  }
-}
-
-.dragon-after {
-    margin: 0px -50px 240px 0px;
-    right: -50px;
-    opacity: 0.3;
-    transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-.home-section {
-  margin-top: 24px;
-}
-
-.section-inner {
-  position: absolute;
-  display: flex;
-  flex-direction: column; 
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  top: 0px;
-
-  h2 {
-    text-align: center;
-    color: white;
-  }
-}
-
-.clocks-container {
-  //background: red;
-  width: 100%;
-  height: 100px;
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-
-  h2 {
-    margin-left: 48px;
-    margin-right: 48px;
-    font-size: 20px;
-  }
-}
-
-.roles-container {
-  //background: blue;
-  width: 100%;
-  height: 100px;
-  margin-top: 48px;
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Inconsolata', monospace;
-  letter-spacing: 6px;
-  
-  h2 {
-    margin-left: 32px;
-    margin-right: 32px;
-    font-size: 32px;
-  }
-}
-
-.cat-container-fixed {
-  //background: red;
-
-  top: $gap !important;
-  bottom: 100% !important;
-  left: 90% !important;
-
-  padding-top: 200px;
-  height: 120px !important;
-
-  p {
-    opacity: 0;
-  }
-}
-
-.cat-container-centered {
-  //background: green;
-}
-
-.cat-container {
-  //background: orange;
-  width: max-content;
-  height: 200px;
-  font-family: 'Inconsolata', monospace;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  top: 60px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  margin: auto;
-  z-index: 999;
-  transition: 2s;
-  
-
-  p {
-    font-family: 'Inconsolata', monospace;
-    text-align: center;
-    font-size: 12px;
-    margin-top: 18px !important;
-    margin-left: -6px;
-    transition: 1s;
-  }
-
-  .cat {
-    //background: red;
-    width: 150px;
-    height: 150px;
-    background-image: url("../assets/SVG/cat-static.svg");
-    filter:grayscale(1);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    //cursor: pointer;
-
-    &:hover {
-      filter: grayscale(0);
-      background-position: center;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  }
-}
-
-.bottom-cloud-container {
-  //background: yellow;
-  width: 100%;
-  height: 200px;
-  position: absolute;
-  bottom: -50px;
-  z-index: 12;
-  background-image: url('../assets/SVG/bottom-clouds.svg');
-  background-position: center;
-  background-size: contain;
-  background-repeat: repeat-x;
-  animation: move-left 180s linear forwards infinite;
-  z-index: 9999;
-}
-
-.main-stuff {
-  //margin-bottom: 300px;
-}
-
-a {
-    text-decoration: none;
-    color: white !important;
-}
-
-.contact-other {
-    margin-top: $gap * 2;
-
-    .sb {
-      padding-right: $gap;
-    }
-}
-
-.sb-icon {
-    background: black;
-    height: 64px;
-    width: 64px;
-    margin-right: 32px;
-    background-size: 50%;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 12px 0px 0px 12px;
-    transition: 300ms;
-
-}
-
-.ig {
-    background-image: url('../assets/sm/ig.svg');
-}
-
-.bh {
-    background-image: url('../assets/sm/bh.svg');
-}
-
-.li {
-    background-image: url('../assets/sm/li.svg');
-}
-
-.email {
-    background-image: url('../assets/sm/email.svg');
-}
-
-.cv {
-    background-image: url('../assets/sm/resume.svg');
-    background-size: 40%;
-}
-
-.sb {
-    //background: red;
-    height: 64px;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    //padding-left: 36px;1
-    margin-bottom: 12px;
-    transition: 300ms;
-    //cursor: none !important;
-
-    span {
-        font-size: 22px;
-        font-weight: bold;
-    }
-
-    &:hover {
-      /*background: white;
-      border-radius: 12px;
-      color: black;
-      //filter:invert(1);
-
-      .sb-icon {
-        //background-color: white;
-        filter: invert(1);
-      }*/
-
-      opacity: 0.8;
-    }
-
-}
-
-.sb-cv {
-    pointer-events: none;
 }
 
 .contact-container {

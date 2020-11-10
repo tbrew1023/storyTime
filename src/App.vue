@@ -94,7 +94,7 @@ html {
 .swoop {
   transform: translate(-22px, -22px) scale(0.4) !important;
   //background: green !important;
-  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: 1s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .logo-loader {
@@ -107,7 +107,7 @@ html {
   width: 200px;
   height: 200px;
   //background: pink;  
-  transition: 3s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
   background-image: url('assets/podular-white-emblem.png');
   background-position: center;
   background-size: contain;
@@ -185,7 +185,7 @@ html {
 
 .loading-veil {
   //display: none;
-  background: #181818;
+  background: #222;
   opacity: 1;
   width: 100%;
   height: 100vh;
@@ -275,7 +275,7 @@ p {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: white;
-  background: black; 
+  background: #222; 
 }
 
 // --------- cursor stuff ----------
@@ -297,9 +297,9 @@ p {
       top: 0;
       left: 0;
       position: fixed;
-      width: 36px;
-      height: 36px;
-      border: 4px solid rgba(white, 1);
+      width: 26px;
+      height: 26px;
+      border: 6px solid rgba(white, 1);
       mix-blend-mode: difference;
       //background: rgba(white,0.3);
       border-radius: 100%;
@@ -336,10 +336,10 @@ p {
     &_hover {
       .g-cursor__point {
           opacity: 1;
-          width: 60px;
-          height: 60px;
-          margin-left: -24px;
-          margin-top: -24px;
+          width: 80px;
+          height: 80px;
+          margin-left: -36px;
+          margin-top: -36px;
           background: white;
           mix-blend-mode: difference;
           //background: rgba(white, 1);

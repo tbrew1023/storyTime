@@ -3,6 +3,8 @@ export default {
   name: 'Home',
   data() {
     return {
+      smallEnter: false,
+      bigEnter: false,
       waveOffset: "120vw",
       waveLeft: true,
       options: {
@@ -57,7 +59,7 @@ export default {
     }, 3000);
   },
   mounted() {
-
+    this.hideNav = false;
   },
   methods: {
     handleExtraClick(i) {
@@ -83,19 +85,28 @@ export default {
         console.log('lock');
         this.waveOffset = "120vw";
         this.waveLeft = true;
+        this.smallEnter = false;
+        this.fromLeft
       } else if(destination.index == 1) {
         this.waveOffset = "30vw";
+        this.smallEnter = false;
         this.waveLeft = false;
+      } else if(destination.index == 2) {
+        this.waveOffset = "50vw";
+        this.smallEnter = true;
+        this.waveLeft = true;
       } else if(destination.index == 3) {
         this.waveOffset = "30vw";
         this.waveLeft = false;
+        this.smallEnter = false;
       } else if(destination.index == 4) {
         this.waveOffset = "30vw";
         this.waveLeft = false;
-      }
-      else {
+        this.smallEnter = false;
+      } else {
         this.waveOffset = "50vw";
         this.waveLeft = true;
+        this.smallEnter = false;
       }
 
       if(direction == 'up') {
@@ -164,6 +175,11 @@ export default {
 <template>
   <div class="home">
 
+    <div class="top-layer">
+      <div :class="( smallEnter ? 'enter' : 'stage-left' )" class="modal-small">This is some text</div>
+      <div :class="( bigEnter ? 'enter' : 'stage-left' )" class="modal-big"></div>
+    </div>
+
     <div class="soc-container">
       <a href="https://www.facebook.com/Caf%C3%A9Bellas-LLC-1664700527089434/" target="_blank"><div class="hoverable soc-button fb"></div></a>
       <a href="https://www.instagram.com/cafebellas/" target="_blank"><div class="hoverable soc-button insta"></div></a>
@@ -182,28 +198,29 @@ export default {
     </div>
 
     <full-page ref="fullpage" :options="options" id="fullpage">
-      <section style="background: blue" class="section landing">
+      <section class="section landing">
         <div class="landing-container">
+          <div @click="() => { $refs.fullpage.api.moveSectionDown() }" class="arrows hoverable"></div>
         </div>
       </section>
       
       <!-- About Podular -->
-      <section style="background: blue" class="section">
+      <section class="section">
 
       </section>
 
       <!-- Modular Pods -->
-      <section style="background: green" class="section">
+      <section class="section">
 
       </section>
 
       <!-- Customization -->
-      <section style="background: orange" class="section">
+      <section class="section">
 
       </section>
 
       <!-- Showroom -->
-      <section style="background: brown" class="section">
+      <section class="section">
         <div class="slide">slide 1</div>
         <div class="slide">slide 2</div>
         <div class="slide">slide 3</div>
@@ -211,7 +228,7 @@ export default {
       </section>
 
       <!-- Contact -->
-      <section style="background: purple" class="section">
+      <section class="section">
 
       </section>
 
@@ -221,6 +238,115 @@ export default {
 
 <style lang="scss" scoped>
 @import '../assets/variables';
+
+  .arrows {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    transform: scale(0.5);
+    margin-top: 190px;
+  }
+  
+  .arrows:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-left: 26.66667px solid rgba(0, 0, 0, 0.7);
+    border-bottom: 26.66667px solid rgba(0, 0, 0, 0.7);
+    transform: translate(26.66667px, 106.66667px) rotate(-45deg);
+    animation: arrows 3s linear infinite;
+  }
+  
+  .arrows:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-left: 26.66667px solid rgba(0, 0, 0, 0.7);
+    border-bottom: 26.66667px solid rgba(0, 0, 0, 0.7);
+    transform: translate(53.33333px, 0px) rotate(-45deg);
+    animation: arrows 3s linear infinite -1.5s;
+  }
+  
+  @keyframes arrows {
+    0% {
+      border-left: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      transform: translate(-13.33333px, -53.33333px) rotate(-45deg);
+    }
+    10%, 90% {
+      border-left: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+    }
+    50% {
+      border-left: 10px solid rgba(255, 255, 255, 0.7);
+      border-bottom: 10px solid rgba(255, 255, 255, 0.7);
+      transform: translate(-13.33333px, 0px) rotate(-45deg);
+    }
+    100% {
+      border-left: 26.66667px solid transparent;
+      border-bottom: 26.66667px solid transparent;
+      transform: translate(-13.33333px, 53.33333px) rotate(-45deg);
+    }
+  }
+
+.enter {
+  opacity: 1;
+  transform: translate(0px, 0px);
+}
+
+.stage-left {
+  opacity: 0 !important;
+  transform: translate(-500px, 0px) scale(0.8);
+  transition: 1.5s !important;
+  transition-delay: 0s;
+}
+
+.stage-right {
+  transform: translate(500px, 0px);
+  opacity: 0 !important;
+  transition: 2s $ezpz !important;
+  transition-delay: 0ms;
+}
+
+.top-layer {
+  position: fixed;
+  z-index: 99999;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  pointer-events: none;
+  justify-content: center;
+  align-items: center;
+
+  .modal-small {
+    background: white;
+    height: 400px;
+    width: 400px;
+    border-radius: 18px;
+    position: absolute;
+    margin-left: -900px;
+    transition: 2s;
+    opacity: 0.05;
+    transition-delay: 500ms;
+  }
+
+  .modal-big {
+    background: white;
+    height: 500px;
+    width: 700px;
+    border-radius: 18px;
+    position: absolute;
+    margin-left: -140px;
+    transition: 2s;
+    //transition: 1.5s;
+  }
+}
+
+.section {
+  background: #222;
+}
 
 .soc-container {
   position: fixed;
@@ -263,7 +389,7 @@ export default {
   height: 24px;
   //background: white;
   //padding: 12px;
-  margin-left: 18px;
+  margin-left: 24px;
   //border-radius: 100%;
   background-size: contain;
   background-position: center;
@@ -709,11 +835,6 @@ export default {
   opacity: 0;
   transition: 2s;
   transform: translate(0px, 300px);
-}
-
-.stage-left {
-  transform: translate(120px, 0px);
-  opacity: 0px;
 }
 
 .blur {

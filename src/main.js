@@ -8,9 +8,6 @@ Vue.config.productionTip = false
 
 Vue.use(VueFullPage);
 
-//scroll directive, just in case
-
-
 new Vue({
   router,
   store,

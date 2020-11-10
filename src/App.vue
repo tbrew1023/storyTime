@@ -108,16 +108,23 @@ html {
   height: 200px;
   //background: pink;  
   transition: 2s cubic-bezier(0.65, 0, 0.35, 1);
-  background-image: url('assets/podular-white-emblem.png');
+  background-image: url('assets/sample-emblem-white.png');
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
 }
 
+.fp-slideNav {
+  margin-bottom: 400px !important
+
+  ul li a span {
+    background: red !important;
+  }
+}
+
 #fp-nav {
-  margin-left: 36px !important;
-  position: absolute;
-  top: 445px;
+
+  margin-left: 48px;
 
   li {
     margin-bottom: 36px !important;
@@ -131,7 +138,9 @@ html {
 
   .active span {
     opacity: 1 !important;
-    transform: translate(4px,4px);
+    background: white !important;
+    border: 2px solid white;
+    //transform: translate(4px,4px);
 
     &:hover {
       //transform: translate(-1px,-1px) !important;
@@ -141,41 +150,18 @@ html {
 
   span {
     background: white !important;
-    opacity: 0.4;
-    height: 24px !important;
-    width: 24px !important;
+    //background: rgba(0,0,0,0) !important;
+    //height: 24px !important;
+    //width: 24px !important;
     //transform: translate(-1px,-1px);
+    transform: none !important;
 
     &:hover {
       //transform: translate(-1px,-1px);
-      transform: scale(1.05);
+      //transform: scale(1.05);
     }
   }
 }
-
-// ---------- scrollbar stuff ----------
-
-/* width */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: white; 
-  border: 4px solid black;
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: white; 
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #bbb; 
-}
-
 
 .unveil {
   opacity: 0 !important;
@@ -198,46 +184,6 @@ html {
   justify-content: center;
   align-items: center;
   transition: 2s;
-
-  .load-cat {
-    background-image: url('assets/4x/cat-mono-fill.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 240px;
-    height: 400px;
-    position: absolute;
-    left: 0px;
-    right: 0px;
-    margin: auto;
-    top: 260px;
-    border-radius: 8px;
-  }
-
-  .load-text {
-    margin-top: 40px;
-    text-align: center;
-    position: absolute;
-    margin: auto;
-    left: 0px;
-    right: 0px;
-    top: 660px;
-    font-size: 18px;
-  }
-}
-
-.cc {
-  position: absolute;
-}
-
-.page-container {
-  height: 100vh;
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 // ---------- transition shit -----------
@@ -261,8 +207,8 @@ body {
 
 @font-face {
   font-family: "Neuzeit Grotesk";
-  src: url("assets/FONTS/Neuzeit_Grotesk/NeuzeitGro-Reg.woff") format("woff"),
-       url("assets/FONTS/Neuzeit_Grotesk/NeuzeitGro-Reg.ttf") format("ttf");
+  /*src: url("assets/FONTS/Neuzeit_Grotesk/NeuzeitGro-Reg.woff") format("woff"),
+       url("assets/FONTS/Neuzeit_Grotesk/NeuzeitGro-Reg.ttf") format("ttf");*/
 }
 
 p {
@@ -294,12 +240,12 @@ p {
     &__circle {
       pointer-events: none;
       user-select: none;
-      top: 0;
-      left: 0;
+      top: 2px;
+      left: 2px;
       position: fixed;
-      width: 26px;
-      height: 26px;
-      border: 6px solid rgba(white, 1);
+      width: 36px;
+      height: 36px;
+      border: 2px solid rgba(white, 1);
       mix-blend-mode: difference;
       //background: rgba(white,0.3);
       border-radius: 100%;
@@ -335,13 +281,14 @@ p {
 
     &_hover {
       .g-cursor__point {
-          opacity: 1;
-          width: 80px;
-          height: 80px;
-          margin-left: -36px;
-          margin-top: -36px;
-          background: white;
-          mix-blend-mode: difference;
+          opacity: 0;
+          width: 64px;
+          height: 64px;
+          margin-left: -24px;
+          margin-top: -24px;
+          border: 2px solid rgba(white, 1);
+          //background: white;
+          //mix-blend-mode: difference;
           //background: rgba(white, 1);
           //border-color: white;
           transition: 
@@ -353,11 +300,11 @@ p {
         }
 
         .g-cursor__circle {
-          opacity: 0;
-          width: 3px;
-          height: 3px;
-          margin-left: 15px;
-          margin-top: 15px;
+          opacity: 1;
+          width: 64px;
+          height: 64px;
+          margin-left: -12px;
+          margin-top: -12px;
           //background: rgba(white, 1);
           //border-color: transparent;
           transition: 
@@ -365,58 +312,8 @@ p {
             width .4s ease,
             height .4s ease,
             opacity .4s ease;
-      }
+        }
     }
-  }
-
-// ---------- load letter stuff ----------
-
-.load-6 .letter {
-  animation-name: loadingF;
-  animation-duration: 1.6s;
-  animation-iteration-count: infinite;
-  animation-direction: linear;
-}
-
-.l-1 {
-  animation-delay: 0.48s;
-}
-.l-2 {
-  animation-delay: 0.6s;
-}
-.l-3 {
-  animation-delay: 0.72s;
-}
-.l-4 {
-  animation-delay: 0.84s;
-}
-.l-5 {
-  animation-delay: 0.96s;
-}
-.l-6 {
-  animation-delay: 1.08s;
-}
-.l-7 {
-  animation-delay: 1.2s;
-}
-.l-8 {
-  animation-delay: 1.32s;
-}
-.l-9 {
-  animation-delay: 1.44s;
-}
-.l-10 {
-  animation-delay: 1.56s;
-}
-
-@keyframes loadingF {
-  0% {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  100% {
-    opacity: 1;
-  }
 }
 
 @media only screen and (max-width: 900px) {

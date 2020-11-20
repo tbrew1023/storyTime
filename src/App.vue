@@ -7,6 +7,7 @@ export default {
   data() {
     return {
       weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
       currentDate: null,
       currentTime: null,
       currentTime24: null,
@@ -62,7 +63,7 @@ export default {
       s = this.checkTime(s);
       this.currentTime = (h + ":" + m + ":" + s);
       this.currentTime24 = ((h < 13 ? h : h - 12 ) + ":" + m + ":" + s + ( h < 13 ? ' AM' : ' PM' ));
-      this.currentDate = this.weekdays(today.getDay()) + ' ' + (today.getMonth() + 1) + ' ' + today.getUTCDate() + ' ' + today.getFullYear();
+      this.currentDate = this.weekdays[parseInt(today.getDay())] + ' ' + this.months[today.getMonth()] + ' ' + today.getUTCDate();
       setTimeout(this.startTime, 500);
     },
     checkTime(i) {

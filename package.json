@@ -22,6 +22,7 @@
     "querystring-browser": "^1.0.4",
     "querystring-es3": "^0.2.1",
     "sugar": "^2.0.6",
+    "v-calendar": "^2.1.1",
     "vue": "^2.6.11",
     "vue-fullpage.js": "^0.1.5",
     "vue-parallaxy": "^1.1.1",

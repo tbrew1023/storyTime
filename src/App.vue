@@ -1,8 +1,15 @@
 <script>
+import Calendar from 'v-calendar/lib/components/calendar.umd'
+
 export default {
   name: 'App',
+  components: {
+    Calendar
+  },
   data() {
     return {
+      unveil: null,
+      dataRef: {},
       time: {
         weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
         months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
@@ -15,14 +22,30 @@ export default {
         location: 'Chicago, IL',
         degreeType: 'F'
       },
-      dataRef: {},
-      xChild: 0,
-      yChild: 0,
-      xParent: 0,
-      yParent: 0,
-      hover: false,
-      hideCursor: false,
-      unveil: null
+      cursor: {
+        xChild: 0,
+        yChild: 0,
+        xParent: 0,
+        yParent: 0,
+        hideCursor: false,
+        hover: false,
+      },
+      dialogs: {
+        calendarActive: false,
+        weatherActive: false,
+        menuActive: false,
+        calendar: {
+          attributes: [
+            {
+              dot: true,
+              popover: {
+
+              },
+
+            }
+          ]
+        }
+      },
     }
   },
   computed: {
@@ -43,11 +66,11 @@ export default {
     }, 3000);
     document.addEventListener("mousemove", this.moveCursor);
     document.addEventListener('mouseleave', (e) => {
-      this.hideCursor = true;
+      this.cursor.hideCursor = true;
       console.log('left: ', e.target);
     });
     document.addEventListener('mouseenter', (e) => {
-      this.hideCursor = false;
+      this.cursor.hideCursor = false;
       console.log('entered: ', e.target);
     });
   },
@@ -63,7 +86,7 @@ export default {
         (error, result) => {
           if (error) console.error(error);
 
-          //console.log(JSON.stringify(result, null, 2));
+          console.log(JSON.stringify(result, null, 2));
           console.log('chicago temp: ', result[0].current.temperature);
           this.weather.currentWeather = result[0].current.temperature + '°' + this.weather.degreeType;
         },
@@ -100,18 +123,36 @@ export default {
       if(e.target.classList.contains('hoverable') || e.target.classList.contains('fp-tooltip') || e.target.tagName == "SPAN") {
         //console.log(e.target.tagName);
         //console.log('HOVERABLE:)');
-        self.hover = true;
+        self.cursor.hover = true;
       } else {
         //console.log('NOT HOVERABLE!');
-        self.hover = false;
+        self.cursor.hover = false;
       }
 
-      this.xChild = e.clientX;
-      this.yChild = e.clientY;
+      this.cursor.xChild = e.clientX;
+      this.cursor.yChild = e.clientY;
       setTimeout(() => {
-        this.xParent = e.clientX - 20;
-        this.yParent = e.clientY - 20;
+        this.cursor.xParent = e.clientX - 20;
+        this.cursor.yParent = e.clientY - 20;
       }, 100);
+    },
+    handleDialogClick(context) {
+      console.log('clicked ', context);
+      if(context == 'calendar') {
+        this.dialogs.calendarActive = !this.dialogs.calendarActive;
+        this.dialogs.weatherActive = false;
+        this.dialogs.menuActive = false;
+      } else if(context == 'weather') {
+        this.dialogs.calendarActive = false;
+        this.dialogs.weatherActive = !this.dialogs.weatherActive;
+        this.dialogs.menuActive = false;
+      } else if(context == 'menu') {
+        this.dialogs.calendarActive = false;
+        this.dialogs.weatherActive = false;
+        this.dialogs.menuActive = !this.dialogs.menuActive;
+      } else {
+        console.log('invalid operation');
+      }
     }
   }
 }
@@ -124,15 +165,30 @@ export default {
         Activities
       </div>
       <div class="middle">
-        <div class="time-container">
+        <div class="time-container" @click="handleDialogClick('calendar')">
           {{ time.currentTime24 + ', ' + time.currentDate }}
         </div>
-        <div class="weather-container">
-          <div class="weather-icon icon"></div>
+        <div @click="handleDialogClick('weather')" class="weather-container">
+          <div class="weather-icon icon"></div> 
           <div class="weather-text">{{ weather.currentWeather }}</div>
         </div>
       </div>
-      <div class="right menu icon"></div>
+      <div @click="handleDialogClick('menu')" class="right menu icon"></div>
+    </div>
+    
+    <div class="dialog-container">
+      <div class="calendar" :class="( dialogs.calendarActive == true ? 'dialog' : 'stage-dialog' )">
+        <div class="tri"></div>
+        <Calendar trim-weeks is-dark :attributes="dialogs.calendar.attributes" />
+      </div>
+      
+      <div class="weather" :class="( dialogs.weatherActive == true ? 'dialog' : 'stage-dialog' )">
+      
+      </div>
+      
+      <div class="menu" :class="( dialogs.menuActive == true ? 'dialog' : 'stage-dialog' )">
+      
+      </div>
     </div>
 
     <div :class="(unveil ? 'swoop' : '' )" class="logo-loader"></div>
@@ -159,6 +215,85 @@ body {
   background: black;
   margin: 0px;
   padding: 0px;
+}
+
+.dialog-container {
+  position: absolute;
+  top: 22px;
+  width: 100%;
+
+  .tri {
+    border-color: transparent transparent #2A2B2E transparent;
+    border-style: solid;
+    border-width: 16px 16px 16px 16px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:-12px;
+    width: 0px;
+    height: 0px;
+  }
+
+  .vc-container {
+    border: none !important;
+    background: #2A2B2E !important;
+  }
+
+  .vc-day-content, .vc-title, .vc-weekday {
+    font-weight: 100 !important;
+  }
+
+  .vc-weekday {
+    color: #69a2ff;
+  }
+
+  .calendar {
+    top: 24px;
+    left: -78px;
+    right: 0px;
+    margin: auto !important;
+    background: transparent !important;
+    width: max-content !important;
+    height: auto;
+  }
+
+  .weather {
+    top: 24px;
+    left: 164px;
+    right: 0px;
+    margin: auto !important;
+  }
+
+  .menu {
+    top: 24px;
+    right: 24px;
+    margin: auto !important;
+  }
+  
+  .stage-dialog {
+    opacity: 0;
+    transform: translateY(-18px);
+    pointer-events: none;
+    transition: 300ms;
+    width: 200px;
+    height: 300px;
+    border-radius: 12px;
+    margin: auto;
+    z-index: 99999;
+    position: absolute;
+  }
+
+  .dialog {
+    background: red;
+    border-radius: 12px;
+    opacity: 1;
+    transform: transitionY(0px);
+    transition: 300ms;
+    width: 200px;
+    height: 300px;
+    margin: auto;
+    z-index: 99999;
+    position: absolute;
+  }
 }
 
 .topbar {
@@ -212,8 +347,8 @@ body {
     }
 
     .weather-icon {
-      margin-left: 12px;
-      margin-right: 12px;
+      margin-left: 18px;
+      margin-right: 8px;
       width: 16px;
       height: 16px;
       background-image: url('assets/icons/weather.svg');

@@ -1,18 +1,4 @@
-<template>
-  <div id="app">
-    <div :class="(unveil ? 'swoop' : '' )" class="logo-loader"></div>
-    <div :class="(unveil ? 'loading-veil unveil' : 'loading-veil')">
-    </div>
-    <div class="cc" :class="[ 'g-cursor', { 'g-cursor_hover': hover }, {'g-cursor_hide': hideCursor} ]">
-      <div :style="cursorCircle" class="g-cursor__circle"></div>
-      <div class="g-cursor__point" ref="point" :style="cursorPoint"></div>
-    </div>
-    <router-view :dataRef='dataRef' />
-  </div>
-</template>
-
 <script>
-
 export default {
   name: 'App',
   components: {
@@ -20,6 +6,10 @@ export default {
   },
   data() {
     return {
+      weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+      currentDate: null,
+      currentTime: null,
+      currentTime24: null,
       dataRef: {},
       xChild: 0,
       yChild: 0,
@@ -39,6 +29,7 @@ export default {
     }
   },
   mounted() {
+    this.startTime();
     setTimeout(() => {
       this.unveil = true;
       //this.waveOffset = 700;
@@ -61,13 +52,30 @@ export default {
       console.log('ROUTE HOME');
       this.$refs.fullpage.api.moveTo(1);
     },
+    startTime() {
+      //console.log('tock');
+      var today = new Date();
+      var h = today.getHours();
+      var m = today.getMinutes();
+      var s = today.getSeconds();
+      m = this.checkTime(m);
+      s = this.checkTime(s);
+      this.currentTime = (h + ":" + m + ":" + s);
+      this.currentTime24 = ((h < 13 ? h : h - 12 ) + ":" + m + ":" + s + ( h < 13 ? ' AM' : ' PM' ));
+      this.currentDate = this.weekdays(today.getDay()) + ' ' + (today.getMonth() + 1) + ' ' + today.getUTCDate() + ' ' + today.getFullYear();
+      setTimeout(this.startTime, 500);
+    },
+    checkTime(i) {
+      if (i < 10) {i = "0" + i}  // add zero in front of numbers < 10
+      return i;
+    },
     moveCursor(e) {
       var self = this;
 
       //console.log(e.target.classList);
 
       if(e.target.classList.contains('hoverable') || e.target.classList.contains('fp-tooltip') || e.target.tagName == "SPAN") {
-        console.log(e.target.tagName);
+        //console.log(e.target.tagName);
         //console.log('HOVERABLE:)');
         self.hover = true;
       } else {
@@ -86,13 +94,74 @@ export default {
 }
 </script>
 
+<template>
+  <div id="app">
+    <div class="topbar">
+      <div class="left">
+        Activities
+      </div>
+      <div class="middle">
+        {{ currentTime24 + ', ' + currentDate }}
+      </div>
+      <div class="right">
+        64d
+      </div>
+    </div>
+
+    <div :class="(unveil ? 'swoop' : '' )" class="logo-loader"></div>
+    <div :class="(unveil ? 'loading-veil unveil' : 'loading-veil')">
+    </div>
+    <!--div class="cc" :class="[ 'g-cursor', { 'g-cursor_hover': hover }, {'g-cursor_hide': hideCursor} ]">
+      <div :style="cursorCircle" class="g-cursor__circle"></div>
+      <div class="g-cursor__point" ref="point" :style="cursorPoint"></div>
+    </div-->
+    <router-view :dataRef='dataRef' />
+  </div>
+</template>
+
 <style lang="scss">
 html {
   transition: filter 1s;
 }
 
+body {
+  background: black;
+}
+
+
+.topbar {
+  background: black;
+  color: white;
+  position: fixed;
+  top: 0px;
+  width: 100vw;
+  height: 24px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 999999;
+  font-size: 14px;
+  line-height: 24px;
+
+  .left {
+    margin-left: 36px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.3;
+    }
+  }
+
+  .middle {
+
+  }
+
+  .right {
+    margin-right: 18px;
+  }
+}
+
 .swoop {
-  transform: translate(-22px, -22px) scale(0.4) !important;
+  transform: translate(-78px, -88px) scale(0.08) !important;
   //background: green !important;
   transition: 1s cubic-bezier(0.65, 0, 0.35, 1);
 }
@@ -115,7 +184,7 @@ html {
 }
 
 .fp-slideNav {
-  margin-bottom: 400px !important
+  margin-bottom: 400px !important;
 
   ul li a span {
     background: red !important;
@@ -227,6 +296,8 @@ p {
 // --------- cursor stuff ----------
 
 .g-cursor {
+    position: absolute;
+
     &_hide {
       opacity: 0;
       width: 60px;

@@ -17,6 +17,8 @@ $gap: 36px;
 $rad: 18px;
 $pad: 64px;
 
+$topbarHeight: 24px;
+
 // ---------- animations ----------
 
 @keyframes spin {
@@ -63,6 +65,13 @@ $pad: 64px;
   }
 
   // ---------- staging ----------
+
+  .stage-section {
+    opacity: 0 !important;
+    transform: scale(0.5) !important;
+    transition: 2s;
+    //background: gray;
+  }
 
   .enter {
     opacity: 1;

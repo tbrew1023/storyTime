@@ -9,15 +9,16 @@ export default {
         normalScrollElements: '.test-container, .modal-active, .modal-inactive, .more-work-grid, .more-work-container, .modal-images',
         controlArrows: true,
         loopHorizontal: false,
-        scrollingSpeed: 1000,
+        scrollingSpeed: 600,
         slidesNavigation: true,
-        navigation: true,
+        //navigation: true,
         fadingEffect: true,
         navigationPosition: 'left',
         navigationTooltips: ['Home','Section 2', 'Section 3', 'Section 4','Section 5','Section 6'],
         showActiveTooltip: true,
-        easingcss3: 'cubic-bezier(0.65, 0, 0.35, 1)', //swoopy
+        easingcss3: 'cubic-bezier(0.22, 1, 0.36, 1)', //swoopy
         anchors: ['home','section2', 'section3', 'section4','section5','section6'],
+        keyboardScrolling: false,
         onLeave: (origin, destination, direction) => {
           this.handleLeave(origin, destination, direction);
         },
@@ -49,42 +50,82 @@ export default {
 
   },
   mounted() {
-    this.hideNav = false; //hide nav on landing page?
+      this.$refs.fullpage.api.setMouseWheelScrolling(false);
+      this.$refs.fullpage.api.setAllowScrolling(false);
+
+      //Navigator
+      this._keyListener = function(e) {
+          //console.log(e.keyCode);
+
+          //Avian view
+          if (e.ctrlKey && e.keyCode === 32) {
+              this.toggleAvian();
+              e.preventDefault();
+          }
+
+          //desktopUp
+          if (e.ctrlKey && e.keyCode === 38) {
+              this.desktopUp();
+              e.preventDefault();
+          }
+
+          //desktopDown
+          if (e.ctrlKey && e.keyCode === 40) {
+              this.desktopDown();
+              e.preventDefault();
+          }
+      };
+
+      document.addEventListener('keyup', this._keyListener.bind(this));
+  },
+  beforeUnmount() {
+      document.removeEventListener('keyup', this._keyListener);
   },
   methods: {
+    toggleAvian() {
+      console.log('Avian view');
+    },
+    desktopUp() {
+      console.log('desktopUp');
+      this.$refs.fullpage.api.moveSectionUp();
+    },
+    desktopDown() {
+      console.log('desktopDown');
+      this.$refs.fullpage.api.moveSectionDown();
+    },
     handleLeave(origin, destination, direction) {
-      console.log('origin: ', origin);
-      console.log('destination: ', destination);
-      console.log('direction: ', direction);
+      //console.log('origin: ', origin);
+      //console.log('destination: ', destination);
+      //console.log('direction: ', direction);
   
       this.activeSection = destination.index;
 
-      console.log('activeSection: ', this.activeSection);
+      //console.log('activeSection: ', this.activeSection);
 
       if(direction == 'up') {
         this.triggerUp = true;
         this.triggerDown = false;
-        console.log('going up');
+        //console.log('going up');
       }
       else {
         this.triggerDown = true;
         this.triggerUp = false;
-        console.log('going down');
+        //console.log('going down');
       }
 
       if(destination.index == 0) {
-        console.log('on first slide');
+        //console.log('on first slide');
       }
     },
     handleSlideLeave(origin, destination, direction) {
       console.clear();
-      console.log('origin: ', origin);
-      console.log('destination: ', destination);
-      console.log('direction: ', direction);
+      //console.log('origin: ', origin);
+      //console.log('destination: ', destination);
+      //console.log('direction: ', direction);
   
       this.activeSlide = destination.index;
 
-      console.log('activeSlide: ', this.activeSlide);
+      //console.log('activeSlide: ', this.activeSlide);
 
       if(direction == 'up') {
         this.triggerUp = true;
@@ -96,7 +137,7 @@ export default {
       }
     },
     handleMouseEnter(i, index) {
-      console.clear();
+      //console.clear();
       console.log('enter' , index);
       this.hover = true;
       this.currentPreview = i.thumb;
@@ -107,7 +148,7 @@ export default {
       console.log(this.currentPreview);
     },
     handleMouseLeave(i, index) {
-      console.clear();
+      //console.clear();
       console.log('leave', index);
 
       this.hover = false;
@@ -134,19 +175,6 @@ export default {
       <div :class="( bigEnter ? 'enter' : 'stage-left' )" class="modal-big"></div>
     </div-->
 
-    <!-- social media buttons -->
-    <div class="soc-container">
-      <a href="#" target="_blank"><div class="hoverable soc-button fb"></div></a>
-      <a href="#" target="_blank"><div class="hoverable soc-button insta"></div></a>
-      <a href="#" target="_blank"><div class="hoverable soc-button tw"></div></a>
-      <a href="#" target="_blank"><div class="hoverable soc-button li"></div></a>
-    </div>
-
-    <!-- optional wave -->
-    <!--div :style="'left:' + waveOffset" :class="(waveLeft ? 'wave-left' : 'wave-right' )" class="wave-panel">
-        <div class="wave"></div>
-    </div-->
-
     <!-- navigation -->
     <div id="nav" class="hoverable">
       <div class="link-list hoverable">
@@ -158,28 +186,28 @@ export default {
     <full-page ref="fullpage" :options="options" id="fullpage">
 
       <!-- Section 1 (landing page) -->
-      <section style="background: blue" class="section landing">
+      <section class="section landing">
         <div class="landing-container">
           <div @click="goDown" class="arrows hoverable"></div>
         </div>
       </section>
       
       <!-- Section 2 -->
-      <section style="background: green" class="section">
-        <div class="page-container">
-          
+      <section class="section">
+        <div class="page-container" :class="( activeSection == 1 ? '' : 'stage-section' )">
+            dektop2
         </div>
       </section>
 
       <!-- Section 3 -->
-      <section style="background: orange" class="section">
+      <section class="section">
         <div class="page-container">
           
         </div>
       </section>
 
       <!-- Section 4 -->
-      <section style="background: maroon" class="section">
+      <section class="section">
         <div class="page-container">
           
         </div>
@@ -187,38 +215,34 @@ export default {
 
       <!-- Section 5 w slides -->
       <section class="section">
-        <div style="background: purple" class="slide">
-          <div class="page-container">
-            slide1
-          </div>        
-        </div>
-        <div style="background: darkblue" class="slide">
-          <div class="page-container">
-            slide2
-          </div>        
-        </div>
-        <div style="background: red" class="slide">
-          <div class="page-container">
-            <div class="page-container">
-              slide3
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 6 -->
-      <section style="background: brown" class="section">
         <div class="page-container">
-          
+          slide1
         </div>
       </section>
-
     </full-page>
   </div>
 </template>
 
 <style lang="scss" scoped>
-@import '../assets/variables';
+@import '../assets/styles/global';
+
+.section {
+  border-radius: 16px;
+  //background: gray;
+}
+
+.home {
+  //border-radius: 12px 12px 0px 0px;
+  margin-top: $topbarHeight;
+}
+
+#fullpage {
+  //pointer-events: none;
+  overflow: hidden;
+  margin-top: 24px;
+  background: black;
+  //border-radius: 12px 12px 0px 0px;
+}
 
 .page-container {
   height: 100vh;

@@ -21,3 +21,5 @@ pnpm-debug.log*
 *.sln
 *.sw?
 firebase-config.js
+#Electron-builder output
+/dist_electron

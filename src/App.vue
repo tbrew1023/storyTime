@@ -85,7 +85,7 @@ export default {
       //s = this.checkTime(s);
       this.time.currentTime = (h + ":" + m);
       this.time.currentTime24 = ((h < 13 ? h : h - 12 ) + ":" + m + ( h < 13 ? ' AM' : ' PM' ));
-      this.time.currentDate = this.time.weekdays[parseInt(today.getDay())] + ' ' + this.time.months[today.getMonth()] + ' ' + today.getUTCDate();
+      this.time.currentDate = this.time.weekdays[parseInt(today.getDay() - 1)] + ' ' + this.time.months[today.getMonth()] + ' ' + today.getUTCDate();
       setTimeout(this.startTime, 500);
     },
     checkTime(i) {
@@ -152,6 +152,7 @@ export default {
 html {
   transition: filter 1s;
   font-family: 'Work Sans', sans-serif !important;
+  font-weight:100;
 }
 
 body {
@@ -171,7 +172,7 @@ body {
   align-items: center;
   justify-content: space-between;
   z-index: 999999;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 24px;
 
   .left {
@@ -188,6 +189,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    margin: auto;
+    width: max-content;
 
     .time-container {
       &:hover {
@@ -199,21 +205,21 @@ body {
       display: flex;
       justify-content: center;
       align-items: center;
+
+      &:hover {
+        opacity: 0.3;
+      }
     }
 
     .weather-icon {
       margin-left: 12px;
       margin-right: 12px;
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       background-image: url('assets/icons/weather.svg');
       background-position: center;
       background-size: contain;
       background-repeat: no-repeat;
-      
-      &:hover {
-        opacity: 0.3;
-      }
     }
   }
 
@@ -229,7 +235,7 @@ body {
     cursor: pointer;
 
     &:hover {
-      opacity: 0.3;
+      opacity: 0.3 !important;
     }
   }
 }

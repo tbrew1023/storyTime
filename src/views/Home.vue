@@ -3,8 +3,9 @@ export default {
   name: 'Home',
   data() {
     return {
-      waveOffset: "120vw",
-      waveLeft: true,
+      appearance: {
+        backgroundColor: '#212225',
+      },
       options: {
         normalScrollElements: '.test-container, .modal-active, .modal-inactive, .more-work-grid, .more-work-container, .modal-images',
         controlArrows: true,
@@ -28,14 +29,9 @@ export default {
       },
       triggerUp: false,
       triggerDown: false,
-      fix: false,
       activeSection: 0,
       activeSlide: 1,
       hover: false,
-      currentExtra: '',
-      currentPreview: '',
-      currentProjectText: '',
-      currentProjectTitle: '',
       scrollOverflow: false,
       context: 0,
     }
@@ -184,41 +180,28 @@ export default {
 
     <!-- main (fullpage.js; TODO: Configuure locomotive scroll) -->
     <full-page ref="fullpage" :options="options" id="fullpage">
-
-      <!-- Section 1 (landing page) -->
-      <section class="section landing">
-        <div class="landing-container">
-          <div @click="goDown" class="arrows hoverable"></div>
-        </div>
-      </section>
       
-      <!-- Section 2 -->
+      <!-- Section -->
       <section class="section">
-        <div class="page-container" :class="( activeSection == 1 ? '' : 'stage-section' )">
-            dektop2
+        <div class="page-container" :style="'background-color: ' + appearance.backgroundColor" :class="( activeSection == 0 ? '' : 'stage-section' )">
+            dektop
         </div>
       </section>
 
-      <!-- Section 3 -->
+      <!-- Section -->
       <section class="section">
-        <div class="page-container">
-          
+        <div class="page-container" :style="'background-color: ' + appearance.backgroundColor" :class="( activeSection == 1 ? '' : 'stage-section' )">
+          desktop2
         </div>
       </section>
 
-      <!-- Section 4 -->
+      <!-- Section -->
       <section class="section">
-        <div class="page-container">
-          
+        <div class="page-container" :style="'background-color: ' + appearance.backgroundColor" :class="( activeSection == 2 ? '' : 'stage-section' )">
+          desktop3
         </div>
       </section>
 
-      <!-- Section 5 w slides -->
-      <section class="section">
-        <div class="page-container">
-          slide1
-        </div>
-      </section>
     </full-page>
   </div>
 </template>
@@ -252,6 +235,9 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  background: blue;
+  transition: 600ms;
+  border-radius: 12px 12px 0px 0px;
 }
 
 .arrows {

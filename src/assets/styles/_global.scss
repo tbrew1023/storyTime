@@ -132,3 +132,11 @@ $topbarHeight: 24px;
   ::-webkit-scrollbar-thumb:hover {
     background: #bbb; 
   }
+
+  // ---------- graphics ----------
+
+  .icon {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }

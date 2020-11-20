@@ -1,16 +1,20 @@
 <script>
 export default {
   name: 'App',
-  components: {
-    //CustomCursor
-  },
   data() {
     return {
-      weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-      months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-      currentDate: null,
-      currentTime: null,
-      currentTime24: null,
+      time: {
+        weekdays: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        currentDate: null,
+        currentTime: null,
+        currentTime24: null,
+      },
+      weather: {
+        currentWeather: null,
+        location: 'Chicago, IL',
+        degreeType: 'F'
+      },
       dataRef: {},
       xChild: 0,
       yChild: 0,
@@ -30,6 +34,7 @@ export default {
     }
   },
   mounted() {
+    this.getWeather();
     this.startTime();
     setTimeout(() => {
       this.unveil = true;
@@ -47,6 +52,23 @@ export default {
     });
   },
   methods: {
+    getWeather() {
+      const weather = require('weather-js');
+
+      weather.find(
+        { 
+          search: this.weather.location, 
+          degreeType: this.weather.degreeType 
+        },
+        (error, result) => {
+          if (error) console.error(error);
+
+          //console.log(JSON.stringify(result, null, 2));
+          console.log('chicago temp: ', result[0].current.temperature);
+          this.weather.currentWeather = result[0].current.temperature + '°' + this.weather.degreeType;
+        },
+      )
+    },
     handleNav(index) {
       console.clear();
       console.log(index);
@@ -58,12 +80,12 @@ export default {
       var today = new Date();
       var h = today.getHours();
       var m = today.getMinutes();
-      var s = today.getSeconds();
+      //var s = today.getSeconds();
       m = this.checkTime(m);
-      s = this.checkTime(s);
-      this.currentTime = (h + ":" + m + ":" + s);
-      this.currentTime24 = ((h < 13 ? h : h - 12 ) + ":" + m + ":" + s + ( h < 13 ? ' AM' : ' PM' ));
-      this.currentDate = this.weekdays[parseInt(today.getDay())] + ' ' + this.months[today.getMonth()] + ' ' + today.getUTCDate();
+      //s = this.checkTime(s);
+      this.time.currentTime = (h + ":" + m);
+      this.time.currentTime24 = ((h < 13 ? h : h - 12 ) + ":" + m + ( h < 13 ? ' AM' : ' PM' ));
+      this.time.currentDate = this.time.weekdays[parseInt(today.getDay())] + ' ' + this.time.months[today.getMonth()] + ' ' + today.getUTCDate();
       setTimeout(this.startTime, 500);
     },
     checkTime(i) {
@@ -102,11 +124,15 @@ export default {
         Activities
       </div>
       <div class="middle">
-        {{ currentTime24 + ', ' + currentDate }}
+        <div class="time-container">
+          {{ time.currentTime24 + ', ' + time.currentDate }}
+        </div>
+        <div class="weather-container">
+          <div class="weather-icon icon"></div>
+          <div class="weather-text">{{ weather.currentWeather }}</div>
+        </div>
       </div>
-      <div class="right">
-        64d
-      </div>
+      <div class="right menu icon"></div>
     </div>
 
     <div :class="(unveil ? 'swoop' : '' )" class="logo-loader"></div>
@@ -121,14 +147,18 @@ export default {
 </template>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
 html {
   transition: filter 1s;
+  font-family: 'Work Sans', sans-serif !important;
 }
 
 body {
   background: black;
+  margin: 0px;
+  padding: 0px;
 }
-
 
 .topbar {
   background: black;
@@ -138,6 +168,7 @@ body {
   width: 100vw;
   height: 24px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
   z-index: 999999;
   font-size: 14px;
@@ -153,11 +184,53 @@ body {
   }
 
   .middle {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
+    .time-container {
+      &:hover {
+        opacity: 0.3;
+      }
+    }
+
+    .weather-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .weather-icon {
+      margin-left: 12px;
+      margin-right: 12px;
+      width: 20px;
+      height: 20px;
+      background-image: url('assets/icons/weather.svg');
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      
+      &:hover {
+        opacity: 0.3;
+      }
+    }
   }
 
   .right {
     margin-right: 18px;
+    //background: red;
+    background-image: url('assets/icons/menu.svg');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 22px;
+    width: 22px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.3;
+    }
   }
 }
 
@@ -267,31 +340,6 @@ body {
 
 .fade-enter-active, .fade-leave-active {
   transition: all 300ms ease;
-}
-
-body {
-  padding: 0px;
-  margin: 0px;
-  //cursor: none;
-}
-
-@font-face {
-  font-family: "Neuzeit Grotesk";
-  /*src: url("assets/FONTS/Neuzeit_Grotesk/NeuzeitGro-Reg.woff") format("woff"),
-       url("assets/FONTS/Neuzeit_Grotesk/NeuzeitGro-Reg.ttf") format("ttf");*/
-}
-
-p {
-  font-family: 'Inconsolata', monospace !important; 
-}
-
-#app {
-  font-family: 'Neuzeit Grotesk', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: white;
-  background: #222; 
 }
 
 // --------- cursor stuff ----------

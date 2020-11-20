@@ -3,8 +3,9 @@ export default {
   name: 'Home',
   data() {
     return {
+      query: '',
       appearance: {
-        backgroundColor: '#212225',
+        backgroundColor: '#eee',
       },
       options: {
         normalScrollElements: '.test-container, .modal-active, .modal-inactive, .more-work-grid, .more-work-container, .modal-images',
@@ -184,14 +185,17 @@ export default {
       <!-- Section -->
       <section class="section">
         <div class="page-container" :style="'background-color: ' + appearance.backgroundColor" :class="( activeSection == 0 ? '' : 'stage-section' )">
-            dektop
+            <div class="landing-search-container">
+              <p class="search-label">Open an app or type a URL</p>
+              <input type="text" id="main-search" v-model="query">
+            </div>
         </div>
       </section>
 
       <!-- Section -->
       <section class="section">
         <div class="page-container" :style="'background-color: ' + appearance.backgroundColor" :class="( activeSection == 1 ? '' : 'stage-section' )">
-          desktop2
+          <webview class="webview" src="https://www.github.com/"></webview>
         </div>
       </section>
 
@@ -208,6 +212,26 @@ export default {
 
 <style lang="scss" scoped>
 @import '../assets/styles/global';
+
+.webview {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  border-radius: 12px 12px 0px 0px;
+}
+
+.search-label {
+  text-align: center;
+  font-size: 13px;
+}
+
+#main-search {
+  border-radius: 36px;
+  border: none;
+  padding: 6px 6px 6px 12px;
+  width: 360px;
+  text-align: center;
+}
 
 .section {
   border-radius: 16px;

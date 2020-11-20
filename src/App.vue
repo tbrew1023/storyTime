@@ -205,6 +205,15 @@ export default {
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
 
+$colorMain: #212225;
+$colorDark: #131417;
+$colorLight: #2A2B2E;
+$colorSecondary: #DFABBF;
+
+$trans: 200ms;
+
+$translucent: 0.6;
+
 html {
   transition: filter 1s;
   font-family: 'Work Sans', sans-serif !important;
@@ -212,18 +221,18 @@ html {
 }
 
 body {
-  background: black;
+  background: $colorMain;
   margin: 0px;
   padding: 0px;
 }
 
 .dialog-container {
   position: absolute;
-  top: 22px;
+  top: 12px;
   width: 100%;
 
   .tri {
-    border-color: transparent transparent #2A2B2E transparent;
+    border-color: transparent transparent black transparent;
     border-style: solid;
     border-width: 16px 16px 16px 16px;
     margin-left: auto;
@@ -235,7 +244,7 @@ body {
 
   .vc-container {
     border: none !important;
-    background: #2A2B2E !important;
+    background: black !important;
   }
 
   .vc-day-content, .vc-title, .vc-weekday {
@@ -243,7 +252,7 @@ body {
   }
 
   .vc-weekday {
-    color: #69a2ff;
+    color: $colorSecondary !important;
   }
 
   .calendar {
@@ -273,7 +282,7 @@ body {
     opacity: 0;
     transform: translateY(-18px);
     pointer-events: none;
-    transition: 300ms;
+    transition: $trans;
     width: 200px;
     height: 300px;
     border-radius: 12px;
@@ -283,11 +292,11 @@ body {
   }
 
   .dialog {
-    background: red;
+    background: $colorDark;
     border-radius: 12px;
     opacity: 1;
     transform: transitionY(0px);
-    transition: 300ms;
+    transition: $trans;
     width: 200px;
     height: 300px;
     margin: auto;
@@ -315,7 +324,7 @@ body {
     cursor: pointer;
 
     &:hover {
-      opacity: 0.3;
+      opacity: $translucent;
     }
   }
 
@@ -332,7 +341,7 @@ body {
 
     .time-container {
       &:hover {
-        opacity: 0.3;
+        opacity: $translucent;
       }
     }
 
@@ -342,7 +351,7 @@ body {
       align-items: center;
 
       &:hover {
-        opacity: 0.3;
+        opacity: $translucent;
       }
     }
 
@@ -370,7 +379,7 @@ body {
     cursor: pointer;
 
     &:hover {
-      opacity: 0.3 !important;
+      opacity: $translucent !important;
     }
   }
 }
@@ -402,7 +411,7 @@ body {
   margin-bottom: 400px !important;
 
   ul li a span {
-    background: red !important;
+    //background: red !important;
   }
 }
 
@@ -455,7 +464,7 @@ body {
 
 .loading-veil {
   //display: none;
-  background: #222;
+  background: $colorDark;
   opacity: 1;
   width: 100%;
   height: 100vh;
@@ -480,7 +489,7 @@ body {
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: all 300ms ease;
+  transition: all $trans ease;
 }
 
 // --------- cursor stuff ----------
